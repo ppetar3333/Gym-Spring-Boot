@@ -1,0 +1,11 @@
+1642704292771	Extract method 'getKarticeNaCekanju'
+1642711478778	Delete element
+1642711486177	Delete element
+1642711491977	Delete element
+1642711496604	Delete element
+1642711503587	Delete element
+1642711510031	Delete element
+1642711514407	Delete element
+1642714554714	Extract method 'pojedinacniTrening'
+1642771587948	Rename local variable 'canNotDelete'
+1642772364839	Rename local variable 'clan'

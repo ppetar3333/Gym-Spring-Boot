@@ -1,0 +1,72 @@
+package com.ftn.teretana.controllers;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.ftn.teretana.enums.StatusKomentara;
+import com.ftn.teretana.models.Komentar;
+import com.ftn.teretana.models.Trening;
+import com.ftn.teretana.service.KomentarService;
+import com.ftn.teretana.service.TreningService;
+
+@Controller
+@RequestMapping(value = "Admin")
+public class AdminKomentariController {
+
+	@Autowired
+	private KomentarService komentarService;
+	
+	@Autowired
+	private TreningService treningService;
+	
+	@GetMapping(value = "/Komentari")
+	private String komentari() {
+		return "pojedinacniModeli/komentari";
+	}
+	
+	@GetMapping(value = "/komentariLista")
+	@ResponseBody
+	private List<Komentar> komentariLista() {
+		
+		List<Komentar> sviKomentari = komentarService.findAll();
+		List<Komentar> komentariNaCekanju = new ArrayList<Komentar>();
+		for(Komentar kom : sviKomentari) {
+			if(kom.getStatusKomentara() == StatusKomentara.naCekanju) {
+				komentariNaCekanju.add(kom);
+			}
+		}
+		
+		return komentariNaCekanju;
+	}
+	
+	@PostMapping(value="/komentariLista/odbijKomentar")
+	@ResponseBody
+	public void odbij(@RequestParam int idKomentara) {
+		Komentar komentar = komentarService.findOneByID(idKomentara);
+		komentar.setStatusKomentara(StatusKomentara.nijeOdobren);
+		komentar.setAktivan(false);
+		komentarService.update(komentar);
+	}
+	
+	@PostMapping(value="/komentariLista/odobriKomentar")
+	@ResponseBody
+	public void odobri(@RequestParam int idKomentara) {
+		Komentar komentar = komentarService.findOneByID(idKomentara);
+		komentar.setStatusKomentara(StatusKomentara.odobren);
+		komentarService.update(komentar);
+		Trening trening = treningService.findOneByID(komentar.getTrening().getId());
+		double ocena = komentar.getOcena();
+		double novaOcena = (trening.getProsecnaOcena() + ocena) / 2;
+		trening.setProsecnaOcena(novaOcena);
+		treningService.update(trening);
+	}
+}

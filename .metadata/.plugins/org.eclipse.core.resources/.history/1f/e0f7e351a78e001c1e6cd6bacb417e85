@@ -1,0 +1,38 @@
+lang.change=Promeni jezik
+lang.en=Engleski
+lang.sr=Srpski
+
+#index.html
+index.registracija = Registracija
+index.neregistrovani = Neregistrovani korisnik
+index.pretragaTreninga = Pretraga Treninga
+index.naziv = Naziv
+index.tipTreninga = Tip Treninga 
+index.cenaOd = Cena od
+index.cenaDo = Cena do
+index.vrsta = Vrsta
+index.nivo = Nivo
+index.trener = Trener
+index.sortirajPo = Sortiraj Po
+
+#nav
+nav.clan = Clan
+nav.svojiPodaci = Prikazi Svoje Podatke
+nav.korpa = Korpa
+nav.listaZelja = Lista Zelja
+nav.zakazaniTreninzi = Zakazani Treninzi
+nav.clanskaKartica = Clanska Kartica
+nav.admin = Admin
+nav.sala = Sala
+nav.pregledKorisnika = Pregled Korisnika
+nav.dodajTrening = Dodavanje Treninga
+nav.komentari = Komentari
+nav.specijalniDatum = Specijalni Datum
+nav.izvestaji = Izvestaji
+
+#login
+login.korisnickoIme = Korisnicko Ime
+login.lozinka = Lozinka
+
+#pojedinacniTrening.html
+pojedinacniTrening.pojedinacniTrening = Pojedinacni Trening

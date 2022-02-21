@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1">
+<title>Registracija</title>
+<base th:href="@{/}">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="js/jezici.js"> </script>
+</head>
+<body>
+	<div>
+		<span th:text="${#locale}"></span>
+		<span th:text="#{lang.change}"></span>:
+		<select id="locales" name="locales">
+		    <option value=""></option>
+		    <option value="en" th:text="#{lang.en}" th:selected="${#strings.equals(#locale.language,'en')}"></option>
+		    <option value="sr" th:text="#{lang.sr}" th:selected="${#strings.equals(#locale.language,'sr')}"></option>
+		</select>
+	</div>	
+	<h3 th:text="#{registracija.naslov}">Registracija</h3>
+	<form th:action="@{Registracija/RegistracijaSave}" method="post">
+        <label for="ime" th:text="#{registracija.ime}">Ime</label>
+        <input type="text" name="ime" required>
+        <br /><br />
+        <label for="prezime" th:text="#{registracija.prezime}">Prezime</label>
+        <input type="text" name="prezime" required>
+        <br /><br />
+        <label for="korisnickoIme" th:text="#{registracija.korIme}">Korisnicko Ime</label>
+        <input type="text" name="korisnickoIme" required>
+        <br /><br />
+        <label for="lozinka" th:text="#{registracija.sifra}">Sifra</label>
+        <input type="password" name="lozinka" required>
+        <br /><br />
+        <label for="email" th:text="#{registracija.email}">Email</label>
+        <input type="text" name="email" required>
+        <br /><br />
+        <label for="datumRodjenja" th:text="#{registracija.datumRodjenja}">Datum Rodjenja</label>
+        <input type="date" name="datumRodjenja" required>
+        <br /><br />
+        <label for="adresa" th:text="#{registracija.adresa}">Adresa</label>
+        <input type="text" name="adresa" required>
+        <br /><br />
+        <label for="brojTelefona" th:text="#{registracija.brTelefona}">Broj Telefona</label>
+        <input type="number" name="brojTelefona" required>
+        <br /><br />
+        <input type="submit" value="Submit">
+    </form>
+    <p th:text="${poruka}"></p>
+    <li><a th:href="@{/}">Home</a></li>
+</body>
+</html>

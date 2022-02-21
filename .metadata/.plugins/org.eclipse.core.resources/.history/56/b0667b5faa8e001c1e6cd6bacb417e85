@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1">
+<title>Lista Zelja</title>
+<base th:href="@{/}">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="js/jezici.js"> </script>
+</head>
+<body>
+	<div>
+		<span th:text="${#locale}"></span>
+		<span th:text="#{lang.change}"></span>:
+		<select id="locales" name="locales">
+		    <option value=""></option>
+		    <option value="en" th:text="#{lang.en}" th:selected="${#strings.equals(#locale.language,'en')}"></option>
+		    <option value="sr" th:text="#{lang.sr}" th:selected="${#strings.equals(#locale.language,'sr')}"></option>
+		</select>
+	</div>	
+	
+	<div th:if="${session.clan != null and session.admin == null}">
+		<p th:text="#{nav.clan}">clan</p>
+		<p><a th:href="@{PrijavaNaSistem/Logout}">Logout</a></p>
+		<div>
+			<nav>
+				<ul>
+					<li>Logo</li>
+					<li><a th:href="@{/}">Home</a></li>
+					<li><a th:text="#{nav.svojiPodaci}" th:href="@{PrikazSvojiPodataka/korisnik}">Prikazi Svoje Podatke</a></li>
+					<li><a th:text="#{nav.korpa}" th:href="@{Korpa/prikazSadrzajaKorpe}">Korpa</a></li>
+					<li><a th:text="#{nav.listaZelja}" th:href="@{ListaZelja/prikaz}">Lista Zelja</a></li>
+					<li><a th:text="#{nav.zakazaniTreninzi}" th:href="@{TreninziClan/prikazTreninga}">Zakazani treninzi</a></li>
+					<li><a th:text="#{nav.clanskaKartica}" th:href="@{ClanskaKartica/prikazStranice}">Clanska Kartica</a></li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+
+	<div th:if="${!listaZelja.isEmpty()}">
+		
+		<form>
+			<table border="1">
+				<tr>
+					<td th:text="#{zelje.imeClana}">Ime Clana</td>
+					<td th:text="#{zelje.nazivTreninga}">Naziv Treninga</td>
+					<td th:text="#{zelje.tipTreninga}">Tip Treninga</td>
+					<td th:text="#{zelje.cenaTreninga}">Cena Treninga</td>
+					<td th:text="#{zelje.ocena}">Ocena</td>
+					<td th:text="#{zelje.trener}">Trener</td>
+					<td th:text="#{zelje.trajanjeTreninga}">Trajanje Treninga</td>
+					<td>Ukloni</td>
+				</tr>
+				<tr th:each="zelja : ${listaZelja}">
+					<td th:text="${zelja.clan.ime}"></td>
+					<td th:text="${zelja.trening.naziv}"></td>
+					<td th:text="${zelja.trening.tipTreninga.ime}"></td>
+					<td th:text="${zelja.trening.cena}"></td>
+					<td th:text="${zelja.trening.prosecnaOcena}"></td>
+					<td th:text="${zelja.trening.trener}"></td>
+					<td th:text="${zelja.trening.trajanjeTreninga}"></td>
+					<td> <a th:text="#{zelje.ukloni}" th:href="|ListaZelja/ukloniIzlisteZelja?id=${zelja.id}|">Ukloni</a> </td>
+				</tr>
+			</table>		
+		</form>
+		<p th:text="${poruka}"></p>
+	</div>
+	
+	<div th:if="${listaZelja.isEmpty()}">
+		<h3 th:text="#{zelje.nemateTreningeUlistiZelja}">Nemate treninge u listi zelja</h3>
+	</div>
+	
+</body>
+</html>

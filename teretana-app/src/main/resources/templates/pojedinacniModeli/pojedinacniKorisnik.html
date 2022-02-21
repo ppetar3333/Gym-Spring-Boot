@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1">
+<base th:href="@{/}">
+<title>Pojedinacni Korisnik</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="js/jezici.js"> </script>
+</head>
+<body>
+	<div>
+		<span th:text="${#locale}"></span>
+		<span th:text="#{lang.change}"></span>:
+		<select id="locales" name="locales">
+		    <option value=""></option>
+		    <option value="en" th:text="#{lang.en}" th:selected="${#strings.equals(#locale.language,'en')}"></option>
+		    <option value="sr" th:text="#{lang.sr}" th:selected="${#strings.equals(#locale.language,'sr')}"></option>
+		</select>
+	</div>	
+	<div th:if="${session.admin != null and session.clan == null}">
+		<p th:text="#{nav.admin}">admin</p>
+		<p><a th:href="@{PrijavaNaSistem/Logout}">Logout</a></p>
+				<div>
+			<nav>
+				<ul>
+					<li>Logo</li>
+					<li><a th:href="@{/}">Home</a></li>
+					<li><a th:text="#{nav.svojiPodaci}" th:href="@{PrikazSvojiPodataka/korisnik}">Prikazi Svoje Podatke</a></li>
+					<li><a th:text="#{nav.sala}" th:href="@{AdminSale/adminSale}">Sala</a></li>
+					<li><a th:text="#{nav.pregledKorisnika}" th:href="@{AdminKorisnici/pregledSvihKorisnika}">Pregled Korisnika</a></li>
+					<li><a th:text="#{nav.dodajTrening}" th:href="@{DodavanjeTreninga/dodavanjeTreninga}">Dodaj Trening</a></li>
+					<li><a th:text="#{nav.clanskaKartica}" th:href="@{ClanskaKartica/prikazStranice}">Clanske Kartice</a></li>
+					<li><a th:text="#{nav.komentari}" th:href="@{Admin/Komentari}">Komentari</a></li>
+					<li><a th:text="#{nav.specijalniDatum}" th:href="@{SpecijalniDatum/prikazStranice}">Specijalni datum</a></li>
+					<li><a th:text="#{nav.izvestaji}" th:href="@{Izvestaji/prikazStranice}">Izvestaji</a></li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+
+	<div th:if="${!imaTermina.isEmpty()}">
+		<h3 th:text="#{korisnik.termini}">Zakazani termini treninga</h3>
+		<table border="1" style="text-align: center;">
+			<tr>
+				<td th:text="#{korisnik.datumTermina}">Datum odrzavanja termina</td>
+				<td th:text="#{treninzi.cena}">Cena</td>
+				<td th:text="#{treninzi.ocena}">Prosecna ocena</td>
+				<td th:text="#{zelje.trajanjeTreninga}">Trajanje treninga</td>
+			</tr>
+			<tr th:each="termin : ${imaTermina}">
+				<td> <a th:text="${termin.datumOdrzavanja}" th:href="|AdminKorisnici/pregledTermina?id=${termin.id}|"></a></td>
+				<td th:text="${termin.trening.cena}"></td>
+				<td th:text="${termin.trening.prosecnaOcena}"></td>
+				<td th:text="${termin.trening.trajanjeTreninga} + min"></td>
+			</tr>
+			<tr>
+				<td th:text="#{korisnik.ukupnaCena}">Ukupna cena</td>
+				<td th:text="${ukupnaCena} + din"></td>
+			</tr>
+		</table>
+	</div>
+	
+	<div th:if="${imaTermina.isEmpty()}">
+		<h4 th:text="#{korisnik.nemaTreninge}">Korisnik nema zakazane treninge</h4>
+	</div>
+	
+	
+	<h3 th:text="#{korisnik.profil}">Profil Korisnika</h3>
+	
+	<form th:action="@{AdminKorisnici/izmeni}" method="post" th:each="kor : ${korisnik}">
+	    <label for="id">ID</label>
+        <input type="text" name="id" readonly th:value="${kor.id}">
+	    <br /><br />
+        <label for="ime" th:text="#{registracija.ime}">Ime</label>
+        <input type="text" name="ime" readonly th:value="${kor.ime}">
+        <br /><br />
+        <label for="prezime" th:text="#{registracija.prezime}">Prezime</label>
+        <input type="text" name="prezime" readonly th:value="${kor.prezime}">
+        <br /><br />
+        <label for="korisnickoIme" th:text="#{registracija.korIme}">Korisnicko Ime</label>
+        <input type="text" name="korisnickoIme" readonly th:value="${kor.korisnickoIme}">
+        <br /><br />
+        <label for="lozinka" th:text="#{registracija.sifra}">Sifra</label>
+        <input type="password" name="lozinka" readonly th:value="${kor.lozinka}">
+        <br /><br />
+        <label for="email" th:text="#{registracija.email}">Email</label>
+        <input type="text" name="email" readonly th:value="${kor.email}">
+        <br /><br />
+        <label for="datumRodjenja" th:text="#{registracija.datumRodjenja}">Datum Rodjenja</label>
+        <input type="date" name="datumRodjenja" readonly th:value="${kor.datumRodjenja}">
+        <br /><br />
+        <label for="adresa" th:text="#{registracija.adresa}">Adresa</label>
+        <input type="text" name="adresa" readonly th:value="${kor.adresa}">
+        <br /><br />
+        <label for="brojTelefona" th:text="#{registracija.brTelefona}">Broj Telefona</label>
+        <input type="number" name="brojTelefona" readonly th:value="${kor.brojTelefona}">
+        <br /><br />
+        <label for="tipKorisnika" th:text="#{sviKorisnici.tipKor}">Tip Korisnika</label>
+        <input type="text" name="tipKorisnika" readonly th:value="${kor.tipKorisnika}">
+        <br /><br />
+        <label for="tipKorisnika" th:text="#{korisnik.izmeniTip}">Izmeni Tip Korisnika</label>
+        <select name="tip">
+    		<option th:each="tip : ${T(com.ftn.teretana.enums.TipKorisnika).values()}"
+            th:value="${tip}"
+            th:text="${tip}"
+            th:selected="${#tip}">
+    		</option>
+		</select>
+        <input type="submit" value="Submit">
+    </form>
+</body>
+</html>

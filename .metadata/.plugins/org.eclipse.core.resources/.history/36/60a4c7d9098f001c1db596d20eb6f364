@@ -1,0 +1,162 @@
+lang.change=Promeni jezik
+lang.en=Engleski
+lang.sr=Srpski
+
+#index.html
+index.registracija = Registracija
+index.neregistrovani = Neregistrovani korisnik
+index.pretragaTreninga = Pretraga Treninga
+index.naziv = Naziv
+index.tipTreninga = Tip Treninga 
+index.cenaOd = Cena od
+index.cenaDo = Cena do
+index.vrsta = Vrsta
+index.nivo = Nivo
+index.trener = Trener
+index.sortirajPo = Sortiraj Po
+
+#nav
+nav.clan = Clan
+nav.svojiPodaci = Prikazi Svoje Podatke
+nav.korpa = Korpa
+nav.listaZelja = Lista Zelja
+nav.zakazaniTreninzi = Zakazani Treninzi
+nav.clanskaKartica = Clanska Kartica
+nav.admin = Admin
+nav.sala = Sala
+nav.pregledKorisnika = Pregled Korisnika
+nav.dodajTrening = Dodavanje Treninga
+nav.komentari = Komentari
+nav.specijalniDatum = Specijalni Datum
+nav.izvestaji = Izvestaji
+
+#login
+login.korisnickoIme = Korisnicko Ime
+login.lozinka = Lozinka
+
+#registracija
+registracija.naslov = Registracija
+registracija.ime = Ime
+registracija.prezime = Prezime
+registracija.korIme = Korisnicko Ime
+registracija.sifra = Sifra
+registracija.email = Email
+registracija.datumRodjenja = Datum Rodjenja
+registracija.adresa = Adresa
+registracija.brTelefona = Broj Telefona
+
+#specijalni datum
+specDatum.naslov = Specijalni Datum
+specDatum.datum = Datum
+specDatum.popust = Popust
+specDatum.trening = Trening
+
+#lista svih korisnika
+sviKorisnici.pretragaKor = Pretraga Korisnika
+sviKorisnici.korIme = Korisnicko Ime
+sviKorisnici.tipKor = Tip Korisnika
+sviKorisnici.sortirajPo = Sortiraj Po
+sviKorisnici.datumReg = Datum Registracije
+sviKorisnici.blokiraj = Blokiraj
+sviKorisnici.odblokiraj = Odblokiraj
+
+#lista svih sala
+sveSale.pretraga = Pretraga Sala
+sveSale.oznaka = Oznaka
+sveSale.kapacitet = Kapacitet
+sveSale.obrisi = Obrisi
+sveSale.izmeni = Izmeni
+sveSale.dodajSalu = Dodaj Salu
+
+#lista svih treninga
+treninzi.slika = Slika
+treninzi.naziv = Naziv
+treninzi.cena = Cena
+treninzi.ocena = Ocena
+treninzi.vrstaTreninga = Vrsta Treninga
+treninzi.nivoTreninga = Nivo Treninga
+treninzi.opis = Opis
+treninzi.otkazi = Otkazi
+treninzi.nemateTreninge = Nemate Zakazane treninge
+
+# lista zelja
+zelje.imeClana = Ime Clana
+zelje.nazivTreninga = Naziv
+zelje.tipTreninga = Tip Treninga
+zelje.cenaTreninga = Cena Treninga
+zelje.ocena = Ocena
+zelje.trener = Trener
+zelje.trajanjeTreninga = Trajanje Treninga
+zelje.ukloni = Ukloni
+zelje.nemateTreningeUlistiZelja = Nemate treninge u listi zelja
+
+# clanska kartica
+karta.naziv = Clanska Kartica
+karta.popust = Popust
+karta.poeni = Broj Poena
+karta.clan = Ime Clana
+karta.status = Status Kartice
+karta.cekaNaPrihvatanje = Ceka Na Prihvatanje
+karta.prihvacena = Prihvacena
+karta.nemaKarticuMozeDaZatrazi = Posto nemate clansku karticu mozete zatraziti njeno kreiranje klikom na dugme ispod
+karta.zatrazi = Zatrazi
+karta.prihvatiOdbij = Clanske kartice koje cekaju na prihvatanje/odbijanje
+karta.prihvati = Prihvati
+karta.odbij = Odbij
+karta.nemaKartica = Trenutno nema kartica
+
+# korisnik
+korisnik.izmeniTip = Izmeni Tip Korisnika
+korisnik.profil = Profil korisnika
+korisnik.nemaTreninge = Korisnik nema zakazane treninge
+korisnik.datumTermina = Datum odrzavanja termina
+korisnik.ukupnaCena = Ukupna Cena
+korisnik.termini = Zakazani termini treninga
+korisnik.izmeniLozinku = Izmeni Lozinku
+
+#pojedinacniTrening.html
+pojedinacniTrening.pojedinacniTrening = Pojedinacni Trening
+pojedinacniTrening.uKorpu = Dodaj u Korpu
+pojedinacniTrening.uListuZelja = Dodaj u Listu zelja
+pojedinacniTrening.dodajTermin = Dodaj Termin
+pojedinacniTrening.izmeniTrening =Izmeni Trening
+pojedinacniTrening.dodaj = Dodaj
+pojedinacniTrening.izmeni = Izmeni
+pojedinacniTrening.odrzavanje = Termini odrzavanja treninga i sala u kojoj se odrzava
+pojedinacniTrening.komentariTreninga = Komentari Treninga
+pojedinacniTrening.nemaKom = *Nema Komentara*
+pojedinacniTrening.autor = Autor
+pojedinacniTrening.datumPostavljanja = Datum Postavljanja
+pojedinacniTrening.anoniman = Komentar Je Anoniman
+pojedinacniTrening.ostaviKomentar = Ostavi Komentar
+pojedinacniTrening.nisteProbali = *Niste isprobali trening, ne mozete komentarisati*
+
+#svoji podaci
+svojiPodaci.pregled = Pregled Svojih Podataka
+
+#zakazani treninzi
+zakazani.naslov = Zakazani Treninzi
+zakazani.otkazivanje = Mozete otkazati samo treninge koji treba da se dese
+
+#korpa
+korpa.stanjeKartice = Stanje na clanskoj kartici
+korpa.danasSpecDatum = Danas je specijalni datum, ne mozete iskoristiti clansku karticu za treninge na popustu
+korpa.iskoristiKarticu = Iskoristi Clansku Kartu (%)
+korpa.izbaci = Izbaci Iz Korpe
+korpa.nemaKarticu = Nemate Clansku Kartu
+korpa.specDatum = Specijalni Datum
+korpa.samoIzbaci = Izbaci
+korpa.zakazi = Zakazi
+korpa.nista = Nemate nista u korpi
+
+#prikaz termina
+priakzTermina.brClanova = Broj Clanova U Sali
+priakzTermina.nema = Nema Slobodnih Termina
+
+#izvestaj
+izvestaj.naslov = Prikaz Izvestaja
+izvestaj.datumOd = Datum Od:
+izvestaj.datumDo = Datum Do:
+izvestaj.sortirajPo = Sortiraj Po
+izvestaj.nemaRezultata = Nema rezultata za izabrani datum
+izvestaj.brTermina = Broj Termina

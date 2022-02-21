@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1">
+<base th:href="@{/}">
+<link rel="stylesheet" href="css/index.css"></link>
+<title>Trening</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="js/jezici.js"> </script>
+<style>
+	table,th,td {
+		border: 0.5px solid black;
+	}
+	table {
+		text-align: center;
+	}
+	img {
+		width: 50%;
+	}
+</style>
+
+</head>
+<body>
+	<div>
+		<span th:text="${#locale}"></span>
+		<span th:text="#{lang.change}"></span>:
+		<select id="locales" name="locales">
+		    <option value=""></option>
+		    <option value="en" th:text="#{lang.en}" th:selected="${#strings.equals(#locale.language,'en')}"></option>
+		    <option value="sr" th:text="#{lang.sr}" th:selected="${#strings.equals(#locale.language,'sr')}"></option>
+		</select>
+	</div>	
+	<a th:href="@{/}">Home</a>
+	<div th:if="${session.clan != null and session.admin == null}">
+		<p th:text="#{nav.clan}">clan</p>
+		<p><a th:href="@{PrijavaNaSistem/Logout}">Logout</a></p>
+		<div>
+			<nav>
+				<ul>
+					<li>Logo</li>
+					<li><a th:text="#{nav.svojiPodaci}" th:href="@{PrikazSvojiPodataka/korisnik}">Prikazi Svoje Podatke</a></li>
+					<li><a th:text="#{nav.korpa}" th:href="@{Korpa/prikazSadrzajaKorpe}">Korpa</a></li>
+					<li><a th:text="#{nav.listaZelja}" th:href="@{ListaZelja/prikaz}">Lista Zelja</a></li>
+					<li><a th:text="#{nav.zakazaniTreninzi}" th:href="@{TreninziClan/prikazTreninga}">Zakazani treninzi</a></li>
+					<li><a th:text="#{nav.clanskaKartica}" th:href="@{ClanskaKartica/prikazStranice}">Clanska Kartica</a></li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+	
+	<div th:if="${session.admin != null and session.clan == null}">
+		<p th:text="#{nav.admin}">admin</p>
+		<p><a th:href="@{PrijavaNaSistem/Logout}">Logout</a></p>
+				<div>
+			<nav>
+				<ul>
+					<li>Logo</li>
+					<li><a th:href="@{/}">Home</a></li>
+					<li><a th:text="#{nav.svojiPodaci}" th:href="@{PrikazSvojiPodataka/korisnik}">Prikazi Svoje Podatke</a></li>
+					<li><a th:text="#{nav.sala}" th:href="@{AdminSale/adminSale}">Sala</a></li>
+					<li><a th:text="#{nav.pregledKorisnika}" th:href="@{AdminKorisnici/pregledSvihKorisnika}">Pregled Korisnika</a></li>
+					<li><a th:text="#{nav.dodajTrening}" th:href="@{DodavanjeTreninga/dodavanjeTreninga}">Dodaj Trening</a></li>
+					<li><a th:text="#{nav.clanskaKartica}" th:href="@{ClanskaKartica/prikazStranice}">Clanske Kartice</a></li>
+					<li><a th:text="#{nav.komentari}" th:href="@{Admin/Komentari}">Komentari</a></li>
+					<li><a th:text="#{nav.specijalniDatum}" th:href="@{SpecijalniDatum/prikazStranice}">Specijalni datum</a></li>
+					<li><a th:text="#{nav.izvestaji}" th:href="@{Izvestaji/prikazStranice}">Izvestaji</a></li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+
+	<h2 th:text="#{pojedinacniTrening.pojedinacniTrening}">Pojedinacni trening</h2>
+	<form>
+		<table>
+			<tr>
+				<td>ID</td>
+				<td th:text="#{treninzi.slika}">Slika</td>
+				<td th:text="#{treninzi.naziv}">Naziv</td>
+				<td th:text="#{treninzi.cena}">Cena</td>
+				<td th:text="#{treninzi.ocena}">Ocena</td>
+				<td th:text="#{zelje.trener}">Trener</td>
+				<td th:text="#{treninzi.opis}">Opis</td>
+				<td th:text="#{zelje.tipTreninga}">Tip treninga</td>
+				<td th:text="#{treninzi.vrstaTreninga}">Vrsta treninga</td>
+				<td th:text="#{treninzi.nivoTreninga}">Nivo treninga</td>
+				<td th:text="#{zelje.trajanjeTreninga}">Trajanje Treninga</td>
+				<td th:if="${session.clan != null and session.admin == null}" th:text="#{pojedinacniTrening.uKorpu}">Dodaj u korpu</td>
+				<td th:if="${session.clan != null and session.admin == null}" th:text="#{pojedinacniTrening.uListuZelja}">Dodaj u listu zelja</td>
+				<td th:if="${session.clan == null and session.admin != null}" th:text="#{pojedinacniTrening.dodajTermin}">Dodaj Novi Termin</td>
+				<td th:if="${session.clan == null and session.admin != null}" th:text="#{pojedinacniTrening.izmeniTrening}">Izmeni Trening</td>
+			</tr>
+			<tr th:each="tre : ${trening}">
+				<td th:text="${tre.id}"></td>
+				<td><img th:src="@{${tre.slikaPath}}" /></td>
+				<td th:text="${tre.naziv}"></td>
+				<td th:text="${tre.cena} + din"></td>
+				<td th:text="${tre.prosecnaOcena}"></td>
+				<td th:text="${tre.trener}"></td>
+				<td th:text="${tre.opis}"></td>
+				<td th:text="${tre.tipTreninga.ime}"></td>
+				<td th:text="${tre.vrstaTreninga}"></td>
+				<td th:text="${tre.nivoTreninga}"></td>
+				<td th:text="${tre.trajanjeTreninga} + min"></td>
+				<td th:if="${session.clan != null and session.admin == null}"><a th:href="|Korpa/prikazSlobodnihTermina?id=${tre.id}|" th:text="#{pojedinacniTrening.dodaj}">Dodaj</a></td>
+				<td th:if="${session.clan != null and session.admin == null}"><a th:href="|ListaZelja/ubaciUlistuZelja?id=${tre.id}|" th:text="#{pojedinacniTrening.dodaj}">Dodaj</a></td>
+				<td th:if="${session.clan == null and session.admin != null}"><a th:href="|DodavanjeTermina/dodavanje?id=${tre.id}|" th:text="#{pojedinacniTrening.dodaj}">Dodaj</a></td>
+				<td th:if="${session.clan == null and session.admin != null}"><a th:href="|IzmenaTreninga/jedanTrening?id=${tre.id}|" th:text="#{pojedinacniTrening.izmeni}">Izmeni</a></td>
+			</tr>
+		</table>
+	</form>
+	<p th:text="${poruka}"></p>
+	<h3 th:text="#{pojedinacniTrening.odrzavanje}">Termini odrzavanja treninga i sala u kojoj se odrzava</h3>
+	<form>
+		<table>
+			<tr>
+				<td>ID</td>
+				<td th:text="#{korisnik.datumTermina}">Datum odrzavanja termina</td>
+				<td th:text="#{sveSale.oznaka}">Oznaka sale</td>
+				<td th:text="#{sveSale.kapacitet}">Kapacitet sale</td>
+			</tr>
+			<tr th:each="termin : ${terminiSale}">
+				<td th:text="${termin.id}"></td>
+				<td> <a th:text="${termin.datumOdrzavanja}"></a></td>
+				<td th:text="${termin.sala.oznakaSale}"></td>
+				<td th:text="${termin.sala.kapacitet}"></td>
+			</tr>
+		</table>
+	</form>
+	<h3 th:text="#{pojedinacniTrening.komentariTreninga}">Komentari treninga</h3>
+	<p th:if="${#lists.isEmpty(komentari)}" th:text="#{pojedinacniTrening.nemaKom}">*Nema komentara*</p>
+	<form th:if="${not #lists.isEmpty(komentari)}">
+		<table>
+			<tr>
+				<td>ID</td>
+				<td th:text="#{nav.komentari}">Komentar</td>
+				<td th:text="#{treninzi.ocena}">Ocena</td>
+				<td th:text="#{pojedinacniTrening.autor}">Autor</td>
+				<td th:text="#{pojedinacniTrening.datumPostavljanja}">Datum Postavljanja</td>
+			</tr>
+			<tr th:each="komentar : ${komentari}">
+				<td th:text="${komentar.id}"></td>
+				<td> <a th:text="${komentar.tekstKomentara}"></a></td>
+				<td th:text="${komentar.ocena}"></td>
+				<td><p th:if="${komentar.anoniman}" th:text="#{pojedinacniTrening.anoniman}"> Komentar je anoniman </p> <p th:unless="${komentar.anoniman}"> <span th:text="${komentar.clan.ime}"></span> </p></td>
+				<td th:text="${komentar.datumPostavljanja}"></td>
+			</tr>
+		</table>
+	</form>
+	<div th:if="${session.clan != null and session.admin == null and !listaTreningaKorisnika.isEmpty()}">
+		<a th:text="#{pojedinacniTrening.ostaviKomentar}">Ostavi komentar</a>
+	</div>
+	<div th:if="${session.clan != null and session.admin == null and listaTreningaKorisnika.isEmpty()}">
+		<p th:text="#{pojedinacniTrening.nisteProbali}">*Niste isprobali trening, ne mozete komentarisati*</p>
+	</div>
+</body>
+</html>

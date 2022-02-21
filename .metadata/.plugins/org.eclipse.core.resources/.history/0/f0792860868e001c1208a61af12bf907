@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1">
+<title>Pocetna</title>
+<link rel="stylesheet" href="css/index.css"></link>
+<base th:href="@{/}">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="js/jezici.js"> </script>
+</head>
+<body>
+
+	<div>
+		<span th:text="${#locale}"></span>
+		<span th:text="#{lang.change}"></span>:
+		<select id="locales" name="locales">
+		    <option value=""></option>
+		    <option value="en" th:text="#{lang.en}" th:selected="${#strings.equals(#locale.language,'en')}"></option>
+		    <option value="sr" th:text="#{lang.sr}" th:selected="${#strings.equals(#locale.language,'sr')}"></option>
+		</select>
+	</div>		
+	
+	<div th:if="${session.clan == null and session.admin == null}">
+		<p>Logo</p>
+		<p th:text="#{index.neregistrovani}">Neregistrovani korisnik</p>
+		<p><a th:href="@{PrijavaNaSistem/prijava}">Login</a></p>
+		<p><a th:text="#{index.registracija}" th:href="@{Registracija/registracija}">Registracija</a></p>
+	</div>
+	
+	<div th:if="${session.clan != null and session.admin == null}">
+		<p th:text="#{nav.clan}">clan</p>
+		<p><a th:href="@{PrijavaNaSistem/Logout}">Logout</a></p>
+		<div>
+			<nav>
+				<ul>
+					<li>Logo</li>
+					<li><a th:href="@{/}">Home</a></li>
+					<li><a th:text="#{nav.svojiPodaci}" th:href="@{PrikazSvojiPodataka/korisnik}">Prikazi Svoje Podatke</a></li>
+					<li><a th:text="#{nav.korpa}" th:href="@{Korpa/prikazSadrzajaKorpe}">Korpa</a></li>
+					<li><a th:text="#{nav.listaZelja}" th:href="@{ListaZelja/prikaz}">Lista Zelja</a></li>
+					<li><a th:text="#{nav.zakazaniTreninzi}" th:href="@{TreninziClan/prikazTreninga}">Zakazani treninzi</a></li>
+					<li><a th:text="#{nav.clanskaKartica}" th:href="@{ClanskaKartica/prikazStranice}">Clanska Kartica</a></li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+	
+	<div th:if="${session.admin != null and session.clan == null}">
+		<p>admin</p>
+		<p><a th:href="@{PrijavaNaSistem/Logout}">Logout</a></p>
+				<div>
+			<nav>
+				<ul>
+					<li>Logo</li>
+					<li><a th:href="@{/}">Home</a></li>
+					<li><a th:href="@{PrikazSvojiPodataka/korisnik}">Prikazi Svoje Podatke</a></li>
+					<li><a th:href="@{AdminSale/adminSale}">Sala</a></li>
+					<li><a th:href="@{AdminKorisnici/pregledSvihKorisnika}">Pregled Korisnika</a></li>
+					<li><a th:href="@{DodavanjeTreninga/dodavanjeTreninga}">Dodaj Trening</a></li>
+					<li><a th:href="@{ClanskaKartica/prikazStranice}">Clanske Kartice</a></li>
+					<li><a>Komentari</a></li>
+					<li><a th:href="@{SpecijalniDatum/prikazStranice}">Specijalni datum</a></li>
+					<li><a th:href="@{Izvestaji/prikazStranice}">Izvestaji</a></li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+	<form th:action="@{pretragaModela/pretragaTreninga}" method="get">
+		<table>
+			<caption><b>Pretraga Treninga</b></caption>
+			<tr>
+				<td> <br/>
+					<label for="naziv">Naziv</label>
+					<input type="text" name="naziv"></input>
+				</td>
+				<td> <br />
+					<label for="tipTreninga">Tip Treninga</label>
+					<select name="tipTreninga">
+						<option></option>
+						<option th:each="tip : ${tipTreningaLista}"
+							th:value="${tip}"
+							th:text="${tip}">
+						</option>
+					</select>
+				</td>
+				<td> <br />
+					<label for="cenaOd">Cena od:</label>
+					<input type="number" name="cenaOd"></input>
+				</td>
+				<td> <br />
+					<label for="cenaDo">Cena do:</label>
+					<input type="number" name="cenaDo"></input>
+				</td>
+				<td> <br />
+					<label for="trener">Trener</label>
+					<input type="text" name="trener"></input>
+				</td>
+				<td> <br />
+					<label>Vrsti</label>
+					<select name="vrsta">
+						<option></option>
+    					<option th:each="vrsta : ${T(com.ftn.teretana.enums.VrstaTreninga).values()}"
+            			th:value="${vrsta}"
+            			th:text="${vrsta}">
+    					</option>
+					</select>
+				</td>
+				<td> <br />
+					<label>Nivou</label>
+					<select name="nivo">
+						<option></option>
+    					<option th:each="nivo : ${T(com.ftn.teretana.enums.NivoTreninga).values()}"
+            			th:value="${nivo}"
+            			th:text="${nivo}">
+    					</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td><br />Sortiraj po
+					<select name="sortiraj">
+						<option></option>
+    					<option th:text="nazivu" th:value="nazivu" th:selected="${#nazivu}"></option>
+    					<option th:text="tipu" th:value="tipu" th:selected="${#tipu}"></option>
+    					<option th:text="ceni" th:value="ceni" th:selected="${#ceni}"></option>
+    					<option th:text="trenerima" th:value="trenerima" th:selected="${#trenerima}"></option>
+    					<option th:text="vrstiTreninga" th:value="vrstiTreninga" th:selected="${#vrstiTreninga}"></option>
+    					<option th:text="nivouTreninga" th:value="nivouTreninga" th:selected="${#nivouTreninga}"></option>
+    					<option th:text="prosecnojOceni" th:value="prosecnojOceni" th:selected="${#prosecnojOceni}"></option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td><br />Order
+					<select name="ascDesc">
+						<option></option>
+						<option th:text="rastuce" th:value="rastuce" th:selected="${#rastuce}"></option>
+    					<option th:text="opadajuce" th:value="opadajuce" th:selected="${#opadajuce}"></option>
+					</select>
+				</td>
+			</tr>
+		</table>
+		<br />
+		<input type="submit" value="Pretrazi">
+		<a th:href="@{/}">restart</a>
+	</form>
+	<div>
+		<div th:each="tre : ${treninziLista}">
+			<p> <img th:src="@{${tre.slikaPath}}" /> </p>
+			<p> <a th:href="|PojedinacniTrening/jedanTrening?id=${tre.id}|" th:text="${tre.naziv}"></a> </p>
+			<p> <p th:text="${tre.cena} + din"></p></p>
+			<p> <p th:text="${tre.prosecnaOcena}"></p> </p>
+		</div>
+	</div>
+</body>
+</html>

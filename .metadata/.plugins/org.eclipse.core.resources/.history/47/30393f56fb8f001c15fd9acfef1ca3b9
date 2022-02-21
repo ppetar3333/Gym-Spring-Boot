@@ -1,0 +1,71 @@
+function json(response) {
+	return response.json()
+}
+
+fetch('Admin/komentariLista', {
+	method: 'get'
+	}).then(response => {
+	  return response.text()
+	}).then((data) => {
+		console.log(data ? JSON.parse(data) : {});
+		listaKomentara = JSON.parse(data);
+
+		if(data) {
+			console.log("ima nesto")
+		} else {
+			console.log("nema nista")
+		}
+		var table = document.getElementById("komentari");
+					
+		for(var i=0; i < listaKomentara.length; i++) {
+			
+			var tr = document.createElement('TR');
+			table.appendChild(tr);
+			
+			var tdTekst = document.createElement('TD');
+			tdTekst.appendChild(document.createTextNode(listaKomentara[i].tekstKomentara));
+			tr.appendChild(tdTekst);
+			
+			var tdOcena = document.createElement('TD');
+			tdOcena.appendChild(document.createTextNode(listaKomentara[i].ocena));
+			tr.appendChild(tdOcena);
+			
+			var tdDatumPostavljanja = document.createElement('TD');
+			tdDatumPostavljanja.appendChild(document.createTextNode(listaKomentara[i].datumPostavljanja));
+			tr.appendChild(tdDatumPostavljanja);
+			
+			var tdClan = document.createElement('TD');
+			tdClan.appendChild(document.createTextNode(listaKomentara[i].clan.ime));
+			tr.appendChild(tdClan);
+			
+			var tdTrening = document.createElement('TD');
+			tdTrening.appendChild(document.createTextNode(listaKomentara[i].trening.naziv));
+			tr.appendChild(tdTrening);
+			
+	        var tdForma = document.createElement('TD')
+	        var form = document.createElement('FORM')
+
+			form.setAttribute('method', "post")
+	       	form.setAttribute('action', "Admin/komentariLista/odbijKomentar")
+
+			var inputHidden = document.createElement('INPUT')
+			
+	        inputHidden.setAttribute('type', "hidden")
+	        inputHidden.setAttribute('name', "idKomentara")
+	        inputHidden.setAttribute('value', listaKomentara[i].id)
+
+	        var inputSubmit = document.createElement('INPUT')
+	        inputSubmit.setAttribute('type', "submit")
+	        inputSubmit.setAttribute('value', "Odbij komentar")
+
+	        form.appendChild(inputHidden)
+	        form.appendChild(inputSubmit)
+	       
+	        tdForma.appendChild(form)
+	       
+	        tr.appendChild(tdForma);
+		}
+	})
+  .catch(function (error) {
+	console.log('Request Failed', error);
+});

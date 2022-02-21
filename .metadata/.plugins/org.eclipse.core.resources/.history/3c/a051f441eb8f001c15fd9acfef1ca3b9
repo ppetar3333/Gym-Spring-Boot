@@ -1,0 +1,9 @@
+function json(response) {
+	return response.json()
+}
+
+fetch('Admin/komentariLista', {
+	method: 'get'
+	}).then((data) => {
+		console.log(data ? JSON.parse(data) : {});
+	})

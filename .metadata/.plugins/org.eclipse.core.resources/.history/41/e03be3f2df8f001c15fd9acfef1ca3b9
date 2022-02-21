@@ -1,0 +1,10 @@
+function popuniKomentare() {
+	$.get("komentari/komentariLista", function(odgovor) {
+		console.log(odgovor);
+		
+		if(odgovor.status == "ok") {
+			var tekst = $("form").find("td[th:name=tekst]")
+			tekst.empty()
+		}
+	})
+}

@@ -1,0 +1,25 @@
+function json(response) {
+	return response.json()
+}
+
+fetch('Admin/komentariLista', {
+	method: 'get'
+	}).then((data) => {
+		console.log(data ? JSON.parse(data) : {});
+		listaKomentara = JSON.parse(data);
+		
+		var table = document.getElementById("komentari");
+		
+		for(var i=0; i < listaKomentara.length; i++) {
+			
+			var tr = document.createElement('TR');
+			table.appendChild(tr);
+			
+			var tdTekst = document.createElement('TD');
+			tdTekst.appendChild(document.createTextNode(listaKomentara[i].tekstKomentara));
+			tr.appendChild(tdTekst);
+		}
+	})
+  .catch(function (error) {
+	console.log('Request Failed', error);
+})

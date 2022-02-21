@@ -1,0 +1,18 @@
+lang.change=Promeni jezik
+lang.en=Engleski
+lang.sr=Srpski
+
+#index.html
+index.registracija = Registracija
+index.neregistrovani = Neregistrovani korisnik
+
+#nav
+nav.clan = Clan
+nav.svojiPodaci = Svoji Podaci
+nav.korpa = Korpa
+nav.listaZelja = listaZelja
+nav.zakazaniTreninzi = Zakazani Treninzi
+nav.clanskaKartica = Clanska Kartica
+
+#pojedinacniTrening.html
+pojedinacniTrening.pojedinacniTrening = Pojedinacni Trening

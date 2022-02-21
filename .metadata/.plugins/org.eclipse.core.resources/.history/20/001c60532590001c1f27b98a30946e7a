@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1">
+<title>Komentarisanje Treninga</title>
+<base th:href="@{/}">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="js/jezici.js"> </script>
+<script src="js/komentarisanjeTreninga.js"> </script>
+</head>
+<body>
+	<div>
+		<span th:text="${#locale}"></span>
+		<span th:text="#{lang.change}"></span>:
+		<select id="locales" name="locales">
+		    <option value=""></option>
+		    <option value="en" th:text="#{lang.en}" th:selected="${#strings.equals(#locale.language,'en')}"></option>
+		    <option value="sr" th:text="#{lang.sr}" th:selected="${#strings.equals(#locale.language,'sr')}"></option>
+		</select>
+	</div>	
+	<a th:href="@{/}">Home</a>
+	<div th:if="${session.clan != null and session.admin == null}">
+		<p th:text="#{nav.clan}">clan</p>
+		<p><a th:href="@{PrijavaNaSistem/Logout}">Logout</a></p>
+		<div>
+			<nav>
+				<ul>
+					<li>Logo</li>
+					<li><a th:text="#{nav.svojiPodaci}" th:href="@{PrikazSvojiPodataka/korisnik}">Prikazi Svoje Podatke</a></li>
+					<li><a th:text="#{nav.korpa}" th:href="@{Korpa/prikazSadrzajaKorpe}">Korpa</a></li>
+					<li><a th:text="#{nav.listaZelja}" th:href="@{ListaZelja/prikaz}">Lista Zelja</a></li>
+					<li><a th:text="#{nav.zakazaniTreninzi}" th:href="@{TreninziClan/prikazTreninga}">Zakazani treninzi</a></li>
+					<li><a th:text="#{nav.clanskaKartica}" th:href="@{ClanskaKartica/prikazStranice}">Clanska Kartica</a></li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+	
+	<h4>Komentarisi Trening</h4>
+	
+	<form method="post" action="/komentarisi">
+	
+		<label>Tekst</label>
+		<textarea name="tekst"> </textarea>
+		<br /> <br />
+		<label>Ocena</label>
+		<input type="number" name="ocena" />
+		<br /> <br />
+		<label>Anoniman</label>
+		<input type="checkbox" name="anoniman" />
+		<br /> <br />
+		<input type="submit" />
+		 
+	</form>
+</body>
+</html>

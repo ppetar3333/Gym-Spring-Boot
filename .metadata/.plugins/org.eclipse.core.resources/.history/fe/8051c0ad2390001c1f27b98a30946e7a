@@ -1,0 +1,31 @@
+$(document).ready(function() {
+
+	var tekstInput = $("textarea[name=tekst]");
+	var ocenaInput = $("input[name=ocena]");
+	var anonimanInput = $("input[name=anoniman]");
+	
+	function dodaj() {
+		
+		var tekst = tekstInput.val();
+		var ocena = ocenaInput.val();
+		var anoniman = anonimanInput.val();
+		
+		var params = {
+			tekstKomentara: tekst,
+			ocena: ocena,
+			anoniman: anoniman
+		}
+		console.log(params)
+		
+		$.post("KorisnikKomentar/komentarisi",
+			params,
+			function(){
+				window.location.href = 'komentar'
+			}
+		)
+		console.log("POST: " + "KorisnikKomentar/komentarisi")
+		
+		return false
+	}
+	$("form").submit(dodaj)
+})

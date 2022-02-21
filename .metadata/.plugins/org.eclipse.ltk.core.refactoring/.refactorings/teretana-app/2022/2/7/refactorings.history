@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename local variable &apos;poruka&apos; in &apos;com.ftn.teretana.controllers.KorpaController.dodajIzabraniTermin(...)&apos; to &apos;message&apos;&#x0D;&#x0A;- Original project: &apos;teretana-app&apos;&#x0D;&#x0A;- Original element: &apos;com.ftn.teretana.controllers.KorpaController.dodajIzabraniTermin(int, Model, HttpSession).poruka&apos;&#x0D;&#x0A;- Renamed element: &apos;poruka&apos;&#x0D;&#x0A;- Update references to refactored element" description="Rename local variable &apos;poruka&apos;" id="org.eclipse.jdt.ui.rename.local.variable" input="/src\/main\/java=/optional=/true=/=/maven.pomderived=/true=/&lt;com.ftn.teretana.controllers{KorpaController.java[KorpaController~dodajIzabraniTermin~I~QModel;~QHttpSession;@poruka!2281!2299!2288!2293!QString;!0!false" name="message" references="true" stamp="1644229341949" version="1.0"/>
+</session>

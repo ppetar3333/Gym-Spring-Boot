@@ -1,0 +1,43 @@
+package com.ftn.teretana.controllers;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.ftn.teretana.enums.StatusKomentara;
+import com.ftn.teretana.models.Komentar;
+import com.ftn.teretana.service.KomentarService;
+
+@Controller
+@RequestMapping(value = "Admin")
+public class AdminKomentariController {
+
+	@Autowired
+	private KomentarService komentarService;
+	
+	@GetMapping(value = "/Komentari")
+	private String komentari() {
+		return "pojedinacniModeli/komentari";
+	}
+	
+	@GetMapping(value = "/komentariLista")
+	@ResponseBody
+	private List<Komentar> komentariLista() {
+		
+		List<Komentar> sviKomentari = komentarService.findAll();
+		List<Komentar> komentariNaCekanju = new ArrayList<Komentar>();
+		for(Komentar kom : sviKomentari) {
+			if(kom.getStatusKomentara() == StatusKomentara.naCekanju) {
+				komentariNaCekanju.add(kom);
+			}
+		}
+		
+		return komentariNaCekanju;
+	}
+}

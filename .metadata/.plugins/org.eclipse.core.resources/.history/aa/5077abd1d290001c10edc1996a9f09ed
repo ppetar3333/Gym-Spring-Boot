@@ -1,0 +1,38 @@
+$(document).ready(function() {
+
+	var tekstInput = $("textarea[name=tekst]");
+	var ocenaInput = $("input[name=ocena]");
+	var selectedOptionInput = $('#anoniman');
+	
+	function dodaj() {
+		
+		var tekst = tekstInput.val();
+		var ocena = ocenaInput.val();
+		var anoniman = selectedOptionInput.val();
+
+		
+		if(parseDouble(ocena) >= 1 && parseDouble(ocena) <= 5 ) {
+			console.log("dobra ocena")
+		} else {
+			console.log("losa ocena")
+		}
+		
+		var params = {
+			tekstKomentara: tekst,
+			ocena: ocena,
+			anoniman: anoniman
+		}
+		console.log(params)
+		
+		$.post("KorisnikKomentar/komentar",
+			params,
+			function(){
+				window.location.href = ''
+			}
+
+		)
+		
+		return false
+	}
+	$("form").submit(dodaj)
+})

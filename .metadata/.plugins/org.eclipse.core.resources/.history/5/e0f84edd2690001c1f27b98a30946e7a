@@ -1,0 +1,33 @@
+package com.ftn.teretana.controllers;
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import com.ftn.teretana.models.Trening;
+import com.ftn.teretana.service.TreningService;
+
+@Controller
+@RequestMapping(value = "KorisnikKomentar")
+public class KorisnikKomentarController {
+
+	@Autowired
+	private TreningService treningService;
+	
+	private Trening trening;
+	
+	@GetMapping(value = "/komentarisi")
+	private String prikazStranice(@RequestParam int id) {
+		trening = treningService.findOneByID(id);
+		return "pojedinacniModeli/korisnikKomentar";
+	}
+	
+	@PostMapping(value = "/komentarisi")
+	private void komentarisi(@RequestParam String tekst, @RequestParam String ocena, @RequestParam String anoniman) {
+		System.out.println(trening.getId());
+	}
+}

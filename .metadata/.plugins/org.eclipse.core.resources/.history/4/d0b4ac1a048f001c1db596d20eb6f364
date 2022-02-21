@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1">
+<title>Zakazani Treninzi</title>
+<base th:href="@{/}">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="js/jezici.js"> </script>
+</head>
+<body>
+	<div>
+		<span th:text="${#locale}"></span>
+		<span th:text="#{lang.change}"></span>:
+		<select id="locales" name="locales">
+		    <option value=""></option>
+		    <option value="en" th:text="#{lang.en}" th:selected="${#strings.equals(#locale.language,'en')}"></option>
+		    <option value="sr" th:text="#{lang.sr}" th:selected="${#strings.equals(#locale.language,'sr')}"></option>
+		</select>
+	</div>	
+	<div th:if="${session.clan != null and session.admin == null}">
+		<p th:text="#{nav.clan}">clan</p>
+		<p><a th:href="@{PrijavaNaSistem/Logout}">Logout</a></p>
+		<div>
+			<nav>
+				<ul>
+					<li>Logo</li>
+					<li><a th:href="@{/}">Home</a></li>
+					<li><a th:text="#{nav.svojiPodaci}" th:href="@{PrikazSvojiPodataka/korisnik}">Prikazi Svoje Podatke</a></li>
+					<li><a th:text="#{nav.korpa}" th:href="@{Korpa/prikazSadrzajaKorpe}">Korpa</a></li>
+					<li><a th:text="#{nav.listaZelja}" th:href="@{ListaZelja/prikaz}">Lista Zelja</a></li>
+					<li><a th:text="#{nav.zakazaniTreninzi}" th:href="@{TreninziClan/prikazTreninga}">Zakazani treninzi</a></li>
+					<li><a th:text="#{nav.clanskaKartica}" th:href="@{ClanskaKartica/prikazStranice}">Clanska Kartica</a></li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+	<h2>Zakazani treninzi</h2>
+	
+	<div th:if="${!zakazaniTreninzi.isEmpty()}">
+		<h4>Mozete otkazati samo treninge koji treba da se dese</h4>
+		<form>
+			<table border="1">
+				<tr>
+					<td>Datum odrzavanja termina</td>
+					<td>Oznaka sale</td>
+					<td>Kapacitet sale</td>
+					<td>Popunjenost sale</td>
+					<td>Naziv treninga</td>
+					<td>Cena treninga</td>
+					<td>Prosecna ocena</td>
+					<td>Trajanje treninga</td>
+					<td>Trener</td>
+					<td>Otkazi</td>
+				</tr>
+				<tr th:each="termin : ${zakazaniTreninzi}">
+					<td> <a th:text="${termin.datumOdrzavanja}"></a></td>
+					<td th:text="${termin.sala.oznakaSale}"></td>
+					<td th:text="${termin.sala.kapacitet}"></td>
+					<td><p th:if="${termin.popunjen}">Sala je popunjena </p> <p th:unless="${termin.popunjen}">Sala nije popunjena </p></td>
+					<td th:text="${termin.trening.naziv}"></td>
+					<td th:text="${termin.trening.cena}"></td>
+					<td th:text="${termin.trening.prosecnaOcena}"></td>
+					<td th:text="${termin.trening.trajanjeTreninga}"></td>
+					<td th:text="${termin.trening.trener}"></td>
+					<td> <a th:href="|TreninziClan/otkaziTermin?id=${termin.id}||">Otkazi</a></td>
+				</tr>
+			</table>
+		</form>
+		<p th:text="${poruka}"></p>
+	</div>
+	
+	<div th:if="${zakazaniTreninzi.isEmpty()}">
+		<h3>Nemate zakazane treninge</h3>
+	</div>
+	
+</body>
+</html>

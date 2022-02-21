@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1">
+<title>Prikaz Korpe</title>
+<base th:href="@{/}">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="js/jezici.js"> </script>
+</head>
+<body>
+	<div>
+		<span th:text="${#locale}"></span>
+		<span th:text="#{lang.change}"></span>:
+		<select id="locales" name="locales">
+		    <option value=""></option>
+		    <option value="en" th:text="#{lang.en}" th:selected="${#strings.equals(#locale.language,'en')}"></option>
+		    <option value="sr" th:text="#{lang.sr}" th:selected="${#strings.equals(#locale.language,'sr')}"></option>
+		</select>
+	</div>		
+	<div th:if="${session.clan != null and session.admin == null}">
+		<p th:text="#{nav.clan}">clan</p>
+		<p><a th:href="@{PrijavaNaSistem/Logout}">Logout</a></p>
+		<div>
+			<nav>
+				<ul>
+					<li>Logo</li>
+					<li><a th:href="@{/}">Home</a></li>
+					<li><a th:text="#{nav.svojiPodaci}" th:href="@{PrikazSvojiPodataka/korisnik}">Prikazi Svoje Podatke</a></li>
+					<li><a th:text="#{nav.korpa}" th:href="@{Korpa/prikazSadrzajaKorpe}">Korpa</a></li>
+					<li><a th:text="#{nav.listaZelja}" th:href="@{ListaZelja/prikaz}">Lista Zelja</a></li>
+					<li><a th:text="#{nav.zakazaniTreninzi}" th:href="@{TreninziClan/prikazTreninga}">Zakazani treninzi</a></li>
+					<li><a th:text="#{nav.clanskaKartica}" th:href="@{ClanskaKartica/prikazStranice}">Clanska Kartica</a></li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+	
+	<div th:if="${!imaKarticu.isEmpty()}">
+		<h4 th:text="#{korpa.stanjeKartice}">Stanje na clanskoj kartici</h4>
+		<div th:each="kartica : ${imaKarticu}">
+			<p th:text="#{karta.poeni}">Bodovi:  </p> <span th:text="${kartica.brojPoena}"></span>
+			<p th:text="#{karta.popust}">Popust  </p> <span th:text="${kartica.popust}"></span>
+		</div>
+	</div>
+	
+	<div th:if="${(!specijalniDatumOdredjeniTrening.isEmpty() or !specijalniDatumSviTreninzi.isEmpty()) and !imaKarticu.isEmpty()}">
+		<h3 th:text="#{korpa.danasSpecDatum}">Danas je specijalni datum, ne mozete iskoristiti clansku karticu za treninge na popustu</h3>
+	</div>
+	
+	<div th:if="${session.korpa != null and !sadrzajKorpeLista.isEmpty() and sadrzajKorpeLista != null}">
+		<form th:action="@{Korpa/zakazi}" method="post">
+			<table border="1">
+				<tr>
+					<td th:text="#{zelje.nazivTreninga}">Naziv Treninga</td>
+					<td th:text="#{zelje.trener}">Trener</td>
+					<td th:text="#{zelje.tipTreninga}">Tip Treninga</td>
+					<td th:text="#{sveSale.oznaka}">Sala</td>
+					<td th:text="#{korisnik.datumTermina}">Datum I Vreme Odrzavanja</td>
+					<td th:text="#{treninzi.cena}">Cena</td>
+					<td th:text="#{korpa.iskoristiKarticu}">Iskoristi Clansku Kartu (%)</td>
+					<td th:text="#{korpa.izbaci}">Izbaci Iz Korpe</td>
+				</tr>
+				<tr th:each="termin : ${sadrzajKorpeLista}">
+					<td th:text="${termin.trening.naziv}"></td>
+					<td th:text="${termin.trening.trener}"></td>
+					<td th:text="${termin.trening.tipTreninga.ime}"></td>
+					<td th:text="${termin.sala.oznakaSale}"></td>
+					<td th:text="${termin.datumOdrzavanja}"></td>
+					<td th:text="${termin.trening.cena}"></td>
+					<td th:if="${!imaKarticu.isEmpty() and specijalniDatumSviTreninzi.isEmpty() and specijalniDatumOdredjeniTrening.isEmpty()}">
+						<select name="iskoristiKarticu">
+							<option></option>
+							<option th:value="${5}" th:text="${5}"></option>
+							<option th:value="${10}" th:text="${10}"></option>
+							<option th:value="${15}" th:text="${15}"></option>
+							<option th:value="${20}" th:text="${20}"></option>
+							<option th:value="${25}" th:text="${25}"></option>
+						</select>
+					</td>
+					<td th:if="${imaKarticu.isEmpty() and specijalniDatumSviTreninzi.isEmpty() and specijalniDatumOdredjeniTrening.isEmpty()}" th:text="#{korpa.nemaKarticu}">Nemate Clansku Kartu</td>
+					
+					
+					<td th:if="${!specijalniDatumSviTreninzi.isEmpty() or !specijalniDatumOdredjeniTrening.isEmpty()}">
+					
+						
+							<p th:if="${!specijalniDatumSviTreninzi.isEmpty() and specijalniDatumOdredjeniTrening.isEmpty() and termin.vaziSpecDatum}" th:text="#{korpa.specDatum}">Specijalni datum</p>
+						
+							<p th:if="${!specijalniDatumSviTreninzi.isEmpty() and specijalniDatumOdredjeniTrening.isEmpty() and !termin.vaziSpecDatum and !imaKarticu.isEmpty()}">
+								<select name="iskoristiKarticu">
+									<option></option>
+									<option th:value="${5}" th:text="${5}"></option>
+									<option th:value="${10}" th:text="${10}"></option>
+									<option th:value="${15}" th:text="${15}"></option>
+									<option th:value="${20}" th:text="${20}"></option>
+									<option th:value="${25}" th:text="${25}"></option>
+								</select>
+							<p/>
+							
+							<p th:if="${!specijalniDatumSviTreninzi.isEmpty() and specijalniDatumOdredjeniTrening.isEmpty() and !termin.vaziSpecDatum and imaKarticu.isEmpty()}" th:text="#{korpa.nemaKarticu}">Nemate Clansku Kartu</p>
+					
+						<p th:if="${termin.vaziSpecDatum and specijalniDatumSviTreninzi.isEmpty() and !specijalniDatumOdredjeniTrening.isEmpty()}" th:text="#{korpa.specDatum}">Specijalni datum</p>
+						
+						<p th:if="${!termin.vaziSpecDatum and !imaKarticu.isEmpty() and specijalniDatumSviTreninzi.isEmpty() and !specijalniDatumOdredjeniTrening.isEmpty()}">
+						
+							<select name="iskoristiKarticu">
+								<option></option>
+								<option th:value="${5}" th:text="${5}"></option>
+								<option th:value="${10}" th:text="${10}"></option>
+								<option th:value="${15}" th:text="${15}"></option>
+								<option th:value="${20}" th:text="${20}"></option>
+								<option th:value="${25}" th:text="${25}"></option>
+							</select>
+						
+						</p>
+						
+						<p th:if="${!termin.vaziSpecDatum and imaKarticu.isEmpty() and specijalniDatumSviTreninzi.isEmpty() and !specijalniDatumOdredjeniTrening.isEmpty()}" th:text="#{korpa.nemaKarticu}">Nemate clansku karticu</p>
+						
+					</td>
+					
+					
+					
+					<td><a th:href="|Korpa/izbaciIzKorpe?id=${termin.id}||" th:text="#{korpa.samoIzbaci}">Izbaci</a></td>
+				</tr>
+			</table>
+			<br />
+			<p th:text="#{korisnik.ukupnaCena}">Ukupna cena:</p> <input name="ukupnaCena" th:value="${ukupnaCena}" />din <br />
+			<input type="submit" th:value="#{korpa.zakazi}" />
+		</form>
+	</div>
+
+	<div th:if="${session.korpa == null or sadrzajKorpeLista.isEmpty()}">
+		<h4 th:text="#{korpa.nista}">Nemate nista u korpi</h4>
+	</div>
+	<p th:text="${poruka}"></p>
+</body>
+</html>

@@ -1,0 +1,49 @@
+lang.change=Change Language
+lang.en=English
+lang.sr=Serbian
+
+#index.html
+index.registracija = Registration
+index.neregistrovani = Unregistred user
+index.pretragaTreninga = Search Trainings
+index.naziv = Name
+index.tipTreninga = Training Type
+index.cenaOd = Price from
+index.cenaDo = Price to
+index.vrsta = Training Species
+index.nivo = Training Level
+index.trener = Trainer
+index.sortirajPo = Sort By
+
+#nav
+nav.clan = User
+nav.svojiPodaci = Your Data
+nav.korpa = Shopping Cart
+nav.listaZelja = List Of Wishes
+nav.zakazaniTreninzi = Booked Trainings
+nav.clanskaKartica = Loyality Card
+nav.admin = Administrator
+nav.sala = Training Hall
+nav.pregledKorisnika = View Users
+nav.dodajTrening = Add Training
+nav.komentari = Comments
+nav.specijalniDatum = Special Dates
+nav.izvestaji = Reports
+
+#login
+login.korisnickoIme = Username
+login.lozinka = Password
+
+#registracija
+registracija.naslov = Registration
+registracija.ime = Name
+registracija.prezime = Last Name
+registracija.korIme = Username
+registracija.sifra = Password
+registracija.email = Email
+registracija.datumRodjenja = Birthday
+registracija.adresa = Address
+registracija.brTelefona = Phone Number
+
+#pojedinacniTrening.html
+pojedinacniTrening.pojedinacniTrening = One Training

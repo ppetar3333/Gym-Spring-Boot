@@ -1,0 +1,15 @@
+$(document).ready(function() {
+
+	var tekstInput = $("input[name=tekst]");
+	var ocenaInput = $("input[name=ocena]");
+	
+	function dodaj() {
+		var tekst = tekstInput.val();
+		var ocena = ocenaInput.val();
+		
+		var params = {
+			tekstKomentara: tekst,
+			ocena: ocena
+		}
+	}
+})

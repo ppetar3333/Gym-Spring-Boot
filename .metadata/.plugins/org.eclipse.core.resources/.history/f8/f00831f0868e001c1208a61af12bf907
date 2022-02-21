@@ -1,0 +1,18 @@
+lang.change=Change Language
+lang.en=English
+lang.sr=Serbian
+
+#index.html
+index.registracija = Registration
+index.neregistrovani = Unregistred user
+
+#nav
+nav.clan = User
+nav.svojiPodaci = Your Data
+nav.korpa = Shopping Cart
+nav.listaZelja = List Of Wishes
+nav.zakazaniTreninzi = Booked Trainings
+nav.clanskaKartica = Loyality Card
+
+#pojedinacniTrening.html
+pojedinacniTrening.pojedinacniTrening = One Training

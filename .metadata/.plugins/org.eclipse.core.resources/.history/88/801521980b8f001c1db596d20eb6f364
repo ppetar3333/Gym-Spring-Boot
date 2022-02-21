@@ -1,0 +1,179 @@
+lang.change=Change Language
+lang.en=English
+lang.sr=Serbian
+
+#index.html
+index.registracija = Registration
+index.neregistrovani = Unregistred user
+index.pretragaTreninga = Search Trainings
+index.naziv = Name
+index.tipTreninga = Training Type
+index.cenaOd = Price from
+index.cenaDo = Price to
+index.vrsta = Training Species
+index.nivo = Training Level
+index.trener = Trainer
+index.sortirajPo = Sort By
+
+#nav
+nav.clan = User
+nav.svojiPodaci = Your Data
+nav.korpa = Shopping Cart
+nav.listaZelja = List Of Wishes
+nav.zakazaniTreninzi = Booked Trainings
+nav.clanskaKartica = Loyality Card
+nav.admin = Administrator
+nav.sala = Training Hall
+nav.pregledKorisnika = View Users
+nav.dodajTrening = Add Training
+nav.komentari = Comments
+nav.specijalniDatum = Special Dates
+nav.izvestaji = Reports
+
+#login
+login.korisnickoIme = Username
+login.lozinka = Password
+
+#registracija
+registracija.naslov = Registration
+registracija.ime = Name
+registracija.prezime = Last Name
+registracija.korIme = Username
+registracija.sifra = Password
+registracija.email = Email
+registracija.datumRodjenja = Birthday
+registracija.adresa = Address
+registracija.brTelefona = Phone Number
+
+#specijalni datum
+specDatum.naslov = Special Date
+specDatum.datum = Date
+specDatum.popust = Discount
+specDatum.trening = Training
+
+#lista svih korisnika
+sviKorisnici.pretragaKor = Search Users
+sviKorisnici.korIme = Username
+sviKorisnici.tipKor = Type Of User
+sviKorisnici.sortirajPo = Sort By
+sviKorisnici.datumReg = Date Of Register
+sviKorisnici.blokiraj = Block
+sviKorisnici.odblokiraj = Unblock
+
+#lista svih sala
+sveSale.pretraga = Search Training Hall
+sveSale.oznaka = Label
+sveSale.kapacitet = Capacity
+sveSale.obrisi = Delete
+sveSale.izmeni = Change
+sveSale.dodajSalu = Add Training Hall
+
+#lista svih treninga
+treninzi.slika = Picture
+treninzi.naziv = Name
+treninzi.cena = Price
+treninzi.ocena = Assessment
+treninzi.vrstaTreninga = Training Specise
+treninzi.nivoTreninga = Level Training
+treninzi.opis = Description
+treninzi.otkazi = Cancel
+treninzi.nemateTreninge = You have no scheduled workouts
+
+# lista zelja
+zelje.imeClana = User
+zelje.nazivTreninga = Name
+zelje.tipTreninga = Type Of Training
+zelje.cenaTreninga = Price
+zelje.ocena = Assessment
+zelje.trener = Trainer
+zelje.trajanjeTreninga = Training Duration
+zelje.ukloni = Remove
+zelje.nemateTreningeUlistiZelja = You dont have trainings in your wishes
+
+# clanska kartica
+karta.naziv = Loyality Card
+karta.popust = Discount
+karta.poeni = Number of points
+karta.clan = User
+karta.status = State Of Card
+karta.cekaNaPrihvatanje = Waiting for accept
+karta.prihvacena = Prihvacena
+karta.nemaKarticuMozeDaZatrazi = Since you do not have a membership card, you can request its creation by clicking on the button below
+karta.zatrazi = Ask
+karta.prihvatiOdbij = Membership cards awaiting acceptance / rejection
+karta.prihvati = Accept
+karta.odbij = Refuse
+karta.nemaKartica = There are currently no cards
+
+# korisnik
+korisnik.izmeniTip = Edit User Type
+korisnik.profil = User profile
+korisnik.nemaTreninge = User has no scheduled workouts
+korisnik.datumTermina = Date of the appointment
+korisnik.ukupnaCena = Total price
+korisnik.termini = Scheduled training dates
+korisnik.izmeniLozinku = Change Password
+
+#pojedinacniTrening.html
+pojedinacniTrening.pojedinacniTrening = One Training
+pojedinacniTrening.uKorpu = Add to cart
+pojedinacniTrening.uListuZelja = Add to wishes
+pojedinacniTrening.dodajTermin = Add appointment
+pojedinacniTrening.izmeniTrening = Change Training
+pojedinacniTrening.dodaj = Add
+pojedinacniTrening.izmeni = Change
+pojedinacniTrening.odrzavanje = Dates of training and the hall in which it is held
+pojedinacniTrening.komentariTreninga = Training Comments
+pojedinacniTrening.nemaKom = *No comments*
+pojedinacniTrening.autor = Author
+pojedinacniTrening.datumPostavljanja = Date Posted
+pojedinacniTrening.anoniman = Comment Is Anonymous
+pojedinacniTrening.ostaviKomentar = Leave a Comment
+pojedinacniTrening.nisteProbali = * You haven't tried the training, you can't comment *
+
+#svoji podaci
+svojiPodaci.pregled = Review Your Data
+
+#zakazani treninzi
+zakazani.naslov = Booked Trainings
+zakazani.otkazivanje = You can only cancel workouts that need to happen
+
+
+#korpa
+korpa.stanjeKartice = Balance on the loyality card
+korpa.danasSpecDatum = Today is a special date, you cannot use the loyality card for training at a discount
+korpa.iskoristiKarticu = Use loyality card (%)
+korpa.izbaci = Get Out of the Basket
+korpa.nemaKarticu = You do not have a Membership Card
+korpa.specDatum = Special Date
+korpa.samoIzbaci = Throw
+korpa.zakazi = Book
+korpa.nista = You have nothing in the basket
+
+#prikaz termina
+priakzTermina.brClanova = Number Of Members In The Hall
+priakzTermina.nema = No Free Terms
+
+#izvestaj
+izvestaj.naslov = Review Report
+izvestaj.datumOd = Date from
+izvestaj.datumDo = Date to
+izvestaj.sortirajPo = Sort By
+izvestaj.nemaRezultata = There are no results for the selected date
+izvestaj.brTermina = Appointment Nubmer
+
+#izmena treninga
+izmenaTren.naslov = Change Training
+
+#izmeniLozinku
+izmeniLozinku.naslov = Change Password
+izmeniLozinku.ponovi = Repeat Password
+
+#dodaj salu
+dodajSalu.naslov = Add Training Hall
+
+#dodavanje termina
+dodajTermin.naslov = Add Appointment
+dodajTermin.izaberiDatum = Choose Date
+dodajTermin.izaberiSalu = Choose Hall
+dodajTermin.vreme = Enter Time

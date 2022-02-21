@@ -1,0 +1,109 @@
+package com.ftn.teretana.models;
+
+import java.time.LocalDateTime;
+
+public class TerminTreninga {
+	
+	private int id;
+	private Sala sala;
+	private Trening trening;
+	private Clan clan;
+	private LocalDateTime datumOdrzavanja;
+	private boolean aktivan;
+	private boolean popunjen;
+	private boolean vaziSpecDatum = false;
+	private int brojBodova;
+	
+	public TerminTreninga(int id, Sala sala, Trening trening, Clan clan, LocalDateTime datumOdrzavanja, boolean aktivan,
+			boolean popunjen) {
+		super();
+		this.id = id;
+		this.sala = sala;
+		this.trening = trening;
+		this.clan = clan;
+		this.datumOdrzavanja = datumOdrzavanja;
+		this.aktivan = aktivan;
+		this.popunjen = popunjen;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public Sala getSala() {
+		return sala;
+	}
+
+	public void setSala(Sala sala) {
+		this.sala = sala;
+	}
+
+	public Trening getTrening() {
+		return trening;
+	}
+
+	public void setTrening(Trening trening) {
+		this.trening = trening;
+	}
+
+	public Clan getClan() {
+		return clan;
+	}
+
+	public void setClan(Clan clan) {
+		this.clan = clan;
+	}
+
+	public LocalDateTime getDatumOdrzavanja() {
+		return datumOdrzavanja;
+	}
+
+	public void setDatumOdrzavanja(LocalDateTime datumOdrzavanja) {
+		this.datumOdrzavanja = datumOdrzavanja;
+	}
+
+	public boolean isAktivan() {
+		return aktivan;
+	}
+
+	public void setAktivan(boolean aktivan) {
+		this.aktivan = aktivan;
+	}
+
+	public boolean isPopunjen() {
+		return popunjen;
+	}
+
+	public void setPopunjen(boolean popunjen) {
+		this.popunjen = popunjen;
+	}
+
+	public boolean isVaziSpecDatum() {
+		return vaziSpecDatum;
+	}
+
+	public void setVaziSpecDatum(boolean vaziSpecDatum) {
+		this.vaziSpecDatum = vaziSpecDatum;
+	}
+	
+
+	public int getBrojBodova() {
+		return brojBodova;
+	}
+
+	public void setBrojBodova(int brojBodova) {
+		this.brojBodova = brojBodova;
+	}
+
+	@Override
+	public String toString() {
+		return "TerminTreninga [id=" + id + ", sala=" + sala + ", trening=" + trening + ", clan=" + clan
+				+ ", datumOdrzavanja=" + datumOdrzavanja + ", aktivan=" + aktivan + ", popunjen=" + popunjen
+				+ ", vaziSpecDatum=" + vaziSpecDatum + ", brojBodova=" + brojBodova + "]";
+	}
+
+}

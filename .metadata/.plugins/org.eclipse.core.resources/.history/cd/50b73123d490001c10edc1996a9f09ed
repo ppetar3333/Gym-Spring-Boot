@@ -1,0 +1,40 @@
+$(document).ready(function() {
+
+	var tekstInput = $("textarea[name=tekst]");
+	var ocenaInput = $("input[name=ocena]");
+	var selectedOptionInput = $('#anoniman');
+	
+	function dodaj() {
+		
+		var tekst = tekstInput.val();
+		var ocena = ocenaInput.val();
+		var anoniman = selectedOptionInput.val();
+
+		var ok = false;
+		
+		if(!(parseInt(ocena) >= 1 && parseInt(ocena) <= 5) && (tekst === "")) {
+			ok = false;
+			alert("Ocena mora biti od 1 do 5 ili morate uneti tekst");
+		}
+		
+		if(ok == true) {
+			var params = {
+				tekstKomentara: tekst,
+				ocena: ocena,
+				anoniman: anoniman
+			}
+			console.log(params)
+			
+			$.post("KorisnikKomentar/komentar",
+				params,
+				function(){
+					window.location.href = ''
+				}
+	
+			)
+		}
+		
+		return false;
+	}
+	$("form").submit(dodaj)
+})

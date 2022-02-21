@@ -1,0 +1,402 @@
+package com.ftn.teretana.controllers;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.ftn.teretana.models.Clan;
+import com.ftn.teretana.models.ClanskaKarta;
+import com.ftn.teretana.models.Korisnik;
+import com.ftn.teretana.models.SlobodniTermini;
+import com.ftn.teretana.models.SpecijalniDatum;
+import com.ftn.teretana.models.TerminTreninga;
+import com.ftn.teretana.models.TipTreninga;
+import com.ftn.teretana.models.Trening;
+import com.ftn.teretana.service.ClanskaKartaService;
+import com.ftn.teretana.service.SpecijalniDatumService;
+import com.ftn.teretana.service.TerminTreningaService;
+import com.ftn.teretana.service.TipTreningaService;
+import com.ftn.teretana.service.TreningService;
+
+@Controller
+@RequestMapping(value = "Korpa")
+public class KorpaController {
+
+	@Autowired
+	private TreningService treningService;
+	
+	@Autowired
+	private ClanskaKartaService clanskaKartaService;
+	
+	@Autowired
+	private TerminTreningaService terminTreningaService;
+	
+	@Autowired
+	private SpecijalniDatumService specijalniDatumService;
+	
+	@Autowired
+	private TipTreningaService tipTreningaService;
+	
+	@GetMapping(value = "/prikazSlobodnihTermina")
+	private ModelAndView prikazSlobodnihTermina(@RequestParam int id, Model model, HttpSession session) {
+		
+		Trening trening = treningService.findOneByID(id);
+		
+		Korisnik korisnik = (Clan) session.getAttribute("clan");
+		
+		List<SlobodniTermini> slobodniTerminiZaSveTreninge = terminTreningaService.getSlobodniTermini(korisnik.getId());
+		
+		List<SlobodniTermini> slobodniTermini = new ArrayList<>();
+		for(SlobodniTermini slobodniT : slobodniTerminiZaSveTreninge) {
+			if(slobodniT.getNazivTreninga().equals(trening.getNaziv())) {
+				slobodniTermini.add(slobodniT);
+			}
+		}
+		
+		
+		ModelAndView rezultat = new ModelAndView("korpa/prikazTermina");
+		
+		rezultat.addObject("slobodniTermini", slobodniTermini);
+		return rezultat;
+	}
+	
+	
+	@GetMapping(value = "/dodajIzabraniTermin")
+	private ModelAndView dodajIzabraniTermin(@RequestParam int id, Model model, HttpSession session) {
+		
+		List<SlobodniTermini> slobodniTermini = new ArrayList<>();
+		
+		try {
+			TerminTreninga termin = terminTreningaService.findOneByID(id);
+			
+			boolean ok = true;
+			boolean nemaPoklapanjaDatuma = true;
+			String message = "";
+			
+			List<TerminTreninga> sadrzajKorpeLista =  (List<TerminTreninga>) session.getAttribute("korpa");
+			if(sadrzajKorpeLista == null) {
+				sadrzajKorpeLista = new ArrayList<TerminTreninga>();
+			}
+			
+
+			Korisnik korisnik = (Clan) session.getAttribute("clan");
+			
+			List<SlobodniTermini> slobodniTerminiZaSveTreninge = terminTreningaService.getSlobodniTermini(korisnik.getId());
+			
+			for(SlobodniTermini slobodniT : slobodniTerminiZaSveTreninge) {
+				if(slobodniT.getNazivTreninga().equals(termin.getTrening().getNaziv())) {
+					slobodniTermini.add(slobodniT);
+				}
+			}
+			
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+			LocalDateTime pocetakNovogTreninga = termin.getDatumOdrzavanja();
+			
+			int trajanjeTreninga = termin.getTrening().getTrajanjeTreninga();
+			LocalDateTime zavrsetakNovogTreninga = pocetakNovogTreninga.plusMinutes(trajanjeTreninga);
+			
+			LocalDateTime pocetakPostojecegTreninga = null;
+			LocalDateTime zavrsetakPostojecegTreninga = null;
+			
+			for(TerminTreninga terminiKorpe : sadrzajKorpeLista) {
+				pocetakPostojecegTreninga = terminiKorpe.getDatumOdrzavanja();
+				zavrsetakPostojecegTreninga = pocetakPostojecegTreninga.plusMinutes(terminiKorpe.getTrening().getTrajanjeTreninga());
+				System.out.println("pocetak postojeceg");
+				System.out.println(pocetakPostojecegTreninga);
+				System.out.println("zavrsetak postojeceg");
+				System.out.println(zavrsetakPostojecegTreninga);
+				System.out.println("pocetak novog");
+				System.out.println(pocetakNovogTreninga);
+				System.out.println("zavrsetak novog");
+				System.out.println(zavrsetakNovogTreninga);
+				if (
+						( pocetakNovogTreninga.isAfter(pocetakPostojecegTreninga) && zavrsetakNovogTreninga.isBefore(zavrsetakPostojecegTreninga) ) ||
+						( pocetakNovogTreninga.isBefore(pocetakPostojecegTreninga) && (zavrsetakNovogTreninga.isAfter(pocetakPostojecegTreninga) && (zavrsetakNovogTreninga.isBefore(zavrsetakPostojecegTreninga))) ) ||
+						( pocetakNovogTreninga.isBefore(pocetakPostojecegTreninga) && zavrsetakNovogTreninga.isAfter(zavrsetakPostojecegTreninga) ) ||
+						( pocetakNovogTreninga.isAfter(pocetakPostojecegTreninga) && (pocetakNovogTreninga.isBefore(zavrsetakPostojecegTreninga))) ||
+						( pocetakNovogTreninga.equals(pocetakPostojecegTreninga) &&  zavrsetakNovogTreninga.equals(zavrsetakPostojecegTreninga) )
+				   ) 
+				{
+					nemaPoklapanjaDatuma = false;
+				}
+				
+			}
+			
+			if(nemaPoklapanjaDatuma == false) {
+				message += "Doslo je do preklapanja termina, pokusajte sa drugim.";
+				ok = false;
+			}
+			
+			for(TerminTreninga terminiKorpe : sadrzajKorpeLista) {
+				if(terminiKorpe.getId() == termin.getId()) {
+					ok = false;
+					message += "Termin se vec nalazi u korpi";
+				}
+			}
+			
+			if(ok == false) {
+				throw new Exception(message);
+			}
+			
+			if(ok == true) {
+				sadrzajKorpeLista.add(termin);
+				session.setAttribute("korpa", sadrzajKorpeLista);
+				ModelAndView rezultat = new ModelAndView("korpa/prikazTermina");
+				rezultat.addObject("slobodniTermini", slobodniTermini);
+				return rezultat;
+			}
+		
+			return null;
+		} catch (Exception ex) {
+			String poruka = ex.getMessage();
+			if (poruka == "") {
+				poruka = "Neuspesno dodavanje u korpu!";
+			}
+			ModelAndView rezultat = new ModelAndView("korpa/prikazTermina");
+			
+			rezultat.addObject("slobodniTermini", slobodniTermini);
+			rezultat.addObject("poruka", poruka);
+			return rezultat;
+		}
+	}
+	
+	@GetMapping(value = "/prikazSadrzajaKorpe")
+	private ModelAndView prikazSadrzajaKorpe(Model model, HttpSession session) {
+		
+		Korisnik korisnik = (Clan) session.getAttribute("clan");
+		List<TerminTreninga> sadrzajKorpeLista =  (List<TerminTreninga>) session.getAttribute("korpa");
+		
+		double ukupnaCena = 0;
+		
+		if(sadrzajKorpeLista != null) {
+			for(TerminTreninga termin : sadrzajKorpeLista) {
+				ukupnaCena += termin.getTrening().getCena();
+			}
+		}
+
+		session.setAttribute("ukupnaCena", ukupnaCena);
+
+		List<ClanskaKarta> imaKarticu = new ArrayList<>();
+		
+		for(ClanskaKarta clanska : clanskaKartaService.findAll()) {
+			if(clanska.getClan().getId() == korisnik.getId()) {
+				imaKarticu.add(clanska);
+			}
+		}
+		
+		
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		List<SpecijalniDatum> specijalniDatumiDanas = specijalniDatumService.getSpecijalniDatumDanas();
+		List<SpecijalniDatum> specijalniDatumSviTreninzi = new ArrayList<>(); // ako je trening id = 0 znaci da popust vazi za sve
+		List<SpecijalniDatum> specijalniDatumOdredjeniTrening = new ArrayList<>();
+		
+		if(specijalniDatumiDanas != null && sadrzajKorpeLista != null) {
+			for(TerminTreninga terminIzKorpe : sadrzajKorpeLista) {
+				for(SpecijalniDatum specijalniDatum : specijalniDatumiDanas) {
+					if(specijalniDatum.getTrening().getId() == 0 && specijalniDatum.getDatum().format(formatter).equals(terminIzKorpe.getDatumOdrzavanja().format(formatter))) {
+						specijalniDatumSviTreninzi.add(specijalniDatum);
+					}
+				}
+			}
+		}
+		
+		if(specijalniDatumOdredjeniTrening != null && sadrzajKorpeLista != null) {
+			for(TerminTreninga terminIzKorpe : sadrzajKorpeLista) {
+				for(SpecijalniDatum specijalniDatum : specijalniDatumiDanas) {
+					if(specijalniDatum.getTrening().getId() != 0 && specijalniDatum.getDatum().format(formatter).equals(terminIzKorpe.getDatumOdrzavanja().format(formatter))) {
+						specijalniDatumOdredjeniTrening.add(specijalniDatum);
+					}
+				}	
+			}
+		}
+		
+		
+		if(sadrzajKorpeLista != null) {
+			for(TerminTreninga terminIzKorpe : sadrzajKorpeLista) {
+				for(SpecijalniDatum spec : specijalniDatumOdredjeniTrening) {
+					if(spec.getTrening().getId() == terminIzKorpe.getTrening().getId() && spec.getDatum().format(formatter).equals(terminIzKorpe.getDatumOdrzavanja().format(formatter))) {
+						terminIzKorpe.setVaziSpecDatum(true);
+					}
+				}
+			}
+		}
+		
+		if(sadrzajKorpeLista != null) {
+			for(TerminTreninga terminIzKorpe : sadrzajKorpeLista) {
+				for(SpecijalniDatum spec : specijalniDatumSviTreninzi) {
+					if(spec.getDatum().format(formatter).equals(terminIzKorpe.getDatumOdrzavanja().format(formatter))) {
+						terminIzKorpe.setVaziSpecDatum(true);
+					}
+				}
+			}
+		}
+		
+		ModelAndView rezultat = new ModelAndView("korpa/prikazKorpe");
+		rezultat.addObject("imaKarticu", imaKarticu);
+		rezultat.addObject("sadrzajKorpeLista", sadrzajKorpeLista);
+		rezultat.addObject("ukupnaCena", ukupnaCena);
+		rezultat.addObject("specijalniDatumSviTreninzi", specijalniDatumSviTreninzi);
+		rezultat.addObject("specijalniDatumOdredjeniTrening", specijalniDatumOdredjeniTrening);
+		
+		return rezultat;
+	}
+	
+	@GetMapping(value = "/izbaciIzKorpe")
+	private ModelAndView izbaciIzKorpe(@RequestParam int id, Model model, HttpSession session) {
+		
+		TerminTreninga termin = terminTreningaService.findOneByID(id);
+		List<TerminTreninga> sadrzajKorpeLista =  (List<TerminTreninga>) session.getAttribute("korpa");
+		int index = -1;
+		
+		for(TerminTreninga termini : sadrzajKorpeLista) {
+			if(termin.getId() == termini.getId()) {
+				index = sadrzajKorpeLista.indexOf(termini);
+			}
+		}
+		
+		sadrzajKorpeLista.remove(index);
+		
+		Korisnik korisnik = (Clan) session.getAttribute("clan");
+		List<ClanskaKarta> imaKarticu = new ArrayList<>();
+		
+		for(ClanskaKarta clanska : clanskaKartaService.findAll()) {
+			if(clanska.getClan().getId() == korisnik.getId()) {
+				imaKarticu.add(clanska);
+			}
+		}
+		
+		double ukupnaCenaSession = (double) session.getAttribute("ukupnaCena");
+		double ukupnaCena = ukupnaCenaSession - termin.getTrening().getCena();
+		session.setAttribute("ukupnaCena", ukupnaCena);
+		
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		List<SpecijalniDatum> specijalniDatumiDanas = specijalniDatumService.getSpecijalniDatumDanas();
+		List<SpecijalniDatum> specijalniDatumSviTreninzi = new ArrayList<>(); // ako je trening id = 0 znaci da popust vazi za sve
+		List<SpecijalniDatum> specijalniDatumOdredjeniTrening = new ArrayList<>();
+		
+		if(specijalniDatumiDanas != null && sadrzajKorpeLista != null) {
+			for(TerminTreninga terminIzKorpe : sadrzajKorpeLista) {
+				for(SpecijalniDatum specijalniDatum : specijalniDatumiDanas) {
+					if(specijalniDatum.getTrening().getId() == 0 && specijalniDatum.getDatum().format(formatter).equals(terminIzKorpe.getDatumOdrzavanja().format(formatter))) {
+						specijalniDatumSviTreninzi.add(specijalniDatum);
+					}
+				}
+			}
+		}
+		
+		if(specijalniDatumOdredjeniTrening != null && sadrzajKorpeLista != null) {
+			for(TerminTreninga terminIzKorpe : sadrzajKorpeLista) {
+				for(SpecijalniDatum specijalniDatum : specijalniDatumiDanas) {
+					if(specijalniDatum.getTrening().getId() != 0 && specijalniDatum.getDatum().format(formatter).equals(terminIzKorpe.getDatumOdrzavanja().format(formatter))) {
+						specijalniDatumOdredjeniTrening.add(specijalniDatum);
+					}
+				}	
+			}
+		}
+		
+		
+		if(sadrzajKorpeLista != null) {
+			for(TerminTreninga terminIzKorpe : sadrzajKorpeLista) {
+				for(SpecijalniDatum spec : specijalniDatumOdredjeniTrening) {
+					if(spec.getTrening().getId() == terminIzKorpe.getTrening().getId() && spec.getDatum().format(formatter).equals(terminIzKorpe.getDatumOdrzavanja().format(formatter))) {
+						terminIzKorpe.setVaziSpecDatum(true);
+					}
+				}
+			}
+		}
+		
+		if(sadrzajKorpeLista != null) {
+			for(TerminTreninga terminIzKorpe : sadrzajKorpeLista) {
+				for(SpecijalniDatum spec : specijalniDatumSviTreninzi) {
+					if(spec.getDatum().format(formatter).equals(terminIzKorpe.getDatumOdrzavanja().format(formatter))) {
+						terminIzKorpe.setVaziSpecDatum(true);
+					}
+				}
+			}
+		}
+		
+		ModelAndView rezultat = new ModelAndView("korpa/prikazKorpe");
+		rezultat.addObject("sadrzajKorpeLista", sadrzajKorpeLista);
+		rezultat.addObject("imaKarticu", imaKarticu);
+		rezultat.addObject("ukupnaCena", ukupnaCena);
+		rezultat.addObject("specijalniDatumSviTreninzi", specijalniDatumSviTreninzi);
+		rezultat.addObject("specijalniDatumOdredjeniTrening", specijalniDatumOdredjeniTrening);
+		
+		return rezultat;
+	}
+	
+	@PostMapping(value = "/zakazi")
+	private ModelAndView zakazi(Model model, HttpSession session, @RequestParam(required = false) String iskoristiKarticu) {
+		
+		List<TerminTreninga> sadrzajKorpeLista =  (List<TerminTreninga>) session.getAttribute("korpa");
+		Clan clan = (Clan) session.getAttribute("clan");
+		ClanskaKarta clanksaKarta = null;
+		List<SpecijalniDatum> specijalniDatumIzKorpe = new ArrayList<>();
+		List<SpecijalniDatum> specijalniDatumLista = specijalniDatumService.findAll();
+		List<ClanskaKarta> clanskeKarteLista = clanskaKartaService.findAll();
+		
+		for(ClanskaKarta clanska : clanskeKarteLista) {
+			if(clan.getId() == clanska.getClan().getId()) {
+				clanksaKarta = clanska;
+			}
+		}
+		
+		DateTimeFormatter formatterDate = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		
+		for(TerminTreninga termin : sadrzajKorpeLista) {
+			if(termin.isVaziSpecDatum()) {
+				for(SpecijalniDatum specDatum : specijalniDatumLista) {
+					if(specDatum.getDatum().format(formatterDate).equals(termin.getDatumOdrzavanja().format(formatterDate))) {
+						specijalniDatumIzKorpe.add(specDatum);
+						System.out.println(specDatum);
+					}
+				}
+			}
+		}
+		
+		boolean ok = true;
+		String message = "";
+
+		int popust = 0;
+		
+		if(specijalniDatumIzKorpe.size() > 0) {
+			for(SpecijalniDatum specijalniDatum : specijalniDatumIzKorpe) {
+				popust += specijalniDatum.getPopust();
+			}
+		}
+		
+		System.out.println(popust);
+		
+		// vraca na index
+		
+		List<Trening> listaTreninga = treningService.findAll();
+		List<TipTreninga> tipTreningaLista = tipTreningaService.findAll();
+		
+		List<String> tipTreningaString = new ArrayList<>();
+		
+		for(TipTreninga tip : tipTreningaLista) {
+			tipTreningaString.add(tip.getIme());
+		}
+		
+		ModelAndView rezultat = new ModelAndView("index");
+		
+		rezultat.addObject("treninziLista", listaTreninga);
+		rezultat.addObject("tipTreningaLista", tipTreningaString);
+		
+		
+		return rezultat;
+	}
+}

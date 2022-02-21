@@ -1,0 +1,186 @@
+package com.ftn.teretana.controllers;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.ftn.teretana.models.PopunjenostSale;
+import com.ftn.teretana.models.Sala;
+import com.ftn.teretana.models.TerminTreninga;
+import com.ftn.teretana.models.TipTreninga;
+import com.ftn.teretana.models.Trening;
+import com.ftn.teretana.service.SalaService;
+import com.ftn.teretana.service.TerminTreningaService;
+import com.ftn.teretana.service.TipTreningaService;
+import com.ftn.teretana.service.TreningService;
+
+@Controller
+@RequestMapping(value = "DodavanjeTermina")
+public class DodavanjeTerminaController {
+
+	@Autowired
+	private TerminTreningaService terminTreningaService;
+	
+	@Autowired
+	private TreningService treningService;
+	
+	@Autowired
+	private SalaService salaService;
+	
+	@Autowired
+	private TipTreningaService tipTreningaService;
+	
+	@GetMapping(value = "/dodavanje")
+	private ModelAndView dodavanjeTermina(@RequestParam int id,Model model) {
+		
+		Trening trening = treningService.findOneByID(id);
+		
+		List<TerminTreninga> terminiTreninga = terminTreningaService.findTerminiTreninga(trening.getId());
+		
+		List<Sala> listaSala = salaService.findAll();
+		
+		List<String> imenaSala = new ArrayList<>();
+		for(Sala sala : listaSala) {
+			imenaSala.add(sala.getOznakaSale());
+		}
+		
+		ModelAndView rezultat = new ModelAndView("dodavanjeModela/dodavanjeTermina");
+		rezultat.addObject("trening", trening);
+		rezultat.addObject("sveSale",imenaSala);
+		
+		return rezultat;
+	}
+	
+	@PostMapping(value = "/dodajTermin")
+	private ModelAndView dodajTermin(@RequestParam(required = false) int idTreninga, @RequestParam(required = false) String sale, @RequestParam(required = false) String datum, @RequestParam(required = false) String vreme, Model model) {
+		
+		Trening trening = treningService.findOneByID(idTreninga);
+		List<TerminTreninga> terminiTreninga = terminTreningaService.findTerminiTreninga(trening.getId());
+		
+		List<Sala> listaSala = salaService.findAll();
+		Sala selektovanaSala = null;
+		for(Sala sala : listaSala) {
+			if(sala.getOznakaSale().equals(sale)) {
+				selektovanaSala = sala;
+			}
+		}		
+		
+		// 1. ako je vreme pocetka novog termina posle vremena pocetka postojeceg termina && ako je vreme zavrsetka novog termina pre vremena zavrsetka postojeceg termina: FALSE
+		// 2. ako je vreme pocetka novog termina pre vremena pocetka postojeceg termina && ako je vreme zavrsetka novog termina posle vremena pocetak postojeceg i pre vremena zavrsetka postojeceg termina: FALSE
+		// 3. ako je vreme pocetka novog termina pre vremena pocetka postojeceg termina && ako je vreme zavrsetka novog termina posle zavrsetka postojeceg termina: FALSE
+		// 4. ako je vreme pocetka novog termina posle vremena pocetka postojeceg termina ali pre zavrsetka postojeceg : FALSE
+		// 5. ako je vreme pocetka novog termina jednak vremenu pocetka postojeceg i ako je vreme zavrsetka novog termina jednak vremenu zavrsetka postojeceg: FALSE
+
+		LocalDateTime pocetakPostojecegTreninga = null;
+		LocalDateTime zavrsetakPostojecegTreninga = null;
+		LocalDateTime trenutniDatum = LocalDateTime.now();
+		String poruka = "";
+		boolean ok = true;
+		boolean nemaPoklapanjaDatuma = true;
+		
+		String regexVremeUnosa = "^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$";
+		
+		if(vreme.matches(regexVremeUnosa)) {
+			
+			String datumOzdrzavanjaString = datum + " " + vreme;
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+			LocalDateTime pocetakNovogTreninga = LocalDateTime.parse(datumOzdrzavanjaString, formatter);
+			
+			int trajanjeTreninga = trening.getTrajanjeTreninga();
+			LocalDateTime zavrsetakNovogTreninga = pocetakNovogTreninga.plusMinutes(trajanjeTreninga);
+			
+			boolean popunjenaSala = false;
+			
+			// vraca listu koja sadrzi oznaku sale, kapacitet i broj termina koji je zakazan u toj sali za taj neki datum
+			List<PopunjenostSale> popunjenostSaleLista = salaService.getPopunjenostSale();
+
+			for(PopunjenostSale popunjenost : popunjenostSaleLista) {
+				if(popunjenost.getOznakaSale().equals(selektovanaSala.getOznakaSale()) && popunjenost.getPopunjenost() >= popunjenost.getKapacitet() && popunjenost.getDatumOdrzavanja().equals(pocetakNovogTreninga)) {
+					popunjenaSala = true;
+				}
+			}
+			
+			if(popunjenaSala == false) {
+				
+				if(pocetakNovogTreninga.isBefore(trenutniDatum)) {
+					poruka += "Ne mozete birati datum u proslosti.";
+					ok = false;
+				} else {
+					TerminTreninga noviTermin = new TerminTreninga(terminTreningaService.generateNewID(), selektovanaSala, trening, null, pocetakNovogTreninga, true, popunjenaSala);
+					
+					for(TerminTreninga termin : terminiTreninga) {
+						
+						if(selektovanaSala.getOznakaSale().equals(termin.getSala().getOznakaSale())) {
+							pocetakPostojecegTreninga = (termin.getDatumOdrzavanja()).minusHours(1);
+							zavrsetakPostojecegTreninga = pocetakPostojecegTreninga.plusMinutes(termin.getTrening().getTrajanjeTreninga());
+							
+							if (
+									( pocetakNovogTreninga.isAfter(pocetakPostojecegTreninga) && zavrsetakNovogTreninga.isBefore(zavrsetakPostojecegTreninga) ) ||
+									( pocetakNovogTreninga.isBefore(pocetakPostojecegTreninga) && (zavrsetakNovogTreninga.isAfter(pocetakPostojecegTreninga) && (zavrsetakNovogTreninga.isBefore(zavrsetakPostojecegTreninga))) ) ||
+									( pocetakNovogTreninga.isBefore(pocetakPostojecegTreninga) && zavrsetakNovogTreninga.isAfter(zavrsetakPostojecegTreninga) ) ||
+									( pocetakNovogTreninga.isAfter(pocetakPostojecegTreninga) && (pocetakNovogTreninga.isBefore(zavrsetakPostojecegTreninga))) ||
+									( pocetakNovogTreninga.equals(pocetakPostojecegTreninga) &&  zavrsetakNovogTreninga.equals(zavrsetakPostojecegTreninga) )
+							   ) 
+							{
+								nemaPoklapanjaDatuma = false;
+							}
+						}
+					}
+					
+					if(nemaPoklapanjaDatuma == true) {
+						System.out.println(noviTermin.toString());
+						ok = true;
+						terminTreningaService.save(noviTermin);
+					} else {
+						poruka += "Doslo je do preklapanja termina, pokusajte sa drugim.";
+						ok = false;
+					}
+				}
+				
+			} else {
+				poruka += "Sala je popunjena, probajte sa drugom salom!";
+				ok = false;
+			}	
+		} else {
+			poruka += "Vreme mora biti u formatu HH:MM";
+			ok = false;
+		}
+		
+		
+		if(ok == true) {
+			ModelAndView rezultat = new ModelAndView("index");
+			
+			List<Trening> treningLista = treningService.findAll();
+			List<String> tipTreningaLista = new ArrayList<>();
+			List<TipTreninga> tipLista = tipTreningaService.findAll();
+			for(TipTreninga tip : tipLista) {
+				tipTreningaLista.add(tip.getIme());
+			}
+			model.addAttribute("treninziLista", treningLista);
+			model.addAttribute("tipTreningaLista", tipTreningaLista);
+			
+			return rezultat;
+		} else {
+			List<String> imenaSala = new ArrayList<>();
+			for(Sala sala : listaSala) {
+				imenaSala.add(sala.getOznakaSale());
+			}
+			
+			ModelAndView rezultat = new ModelAndView("dodavanjeModela/dodavanjeTermina");
+			rezultat.addObject("trening", trening);
+			rezultat.addObject("sveSale",imenaSala);
+			rezultat.addObject("poruka",poruka);
+			return rezultat;
+		}
+	}
+}

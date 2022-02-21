@@ -1,0 +1,35 @@
+$(document).ready(function() {
+
+	var tekstInput = $("textarea[name=tekst]");
+	var ocenaInput = $("input[name=ocena]");
+	var anonimanInput = $("input[name=anoniman]");
+	
+	if(ocenaInput.val() < 2) {
+		console.log("greska");
+	} else {
+		console.log("vece od 2");
+	}
+	function dodaj() {
+		
+		var tekst = tekstInput.val();
+		var ocena = ocenaInput.val();
+		var anoniman = anonimanInput.val();
+		
+		var params = {
+			tekstKomentara: tekst,
+			ocena: ocena,
+			anoniman: anoniman
+		}
+		console.log(params)
+		
+		$.post("KorisnikKomentar/komentar",
+			params,
+			function(){
+				window.location.href = 'index'
+			}
+		)
+		
+		return false
+	}
+	$("form").submit(dodaj)
+})

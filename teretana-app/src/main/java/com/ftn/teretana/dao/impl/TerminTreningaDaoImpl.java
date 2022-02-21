@@ -1,0 +1,214 @@
+package com.ftn.teretana.dao.impl;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Repository;
+
+import com.ftn.teretana.dao.TerminTreningaDao;
+import com.ftn.teretana.models.Clan;
+import com.ftn.teretana.models.Izvestaj;
+import com.ftn.teretana.models.Korisnik;
+import com.ftn.teretana.models.PopunjenostSale;
+import com.ftn.teretana.models.Sala;
+import com.ftn.teretana.models.SlobodniTermini;
+import com.ftn.teretana.models.SpecijalniDatum;
+import com.ftn.teretana.models.TerminTreninga;
+import com.ftn.teretana.models.TipTreninga;
+import com.ftn.teretana.models.Trening;
+import com.ftn.teretana.service.KorisnikService;
+import com.ftn.teretana.service.SalaService;
+import com.ftn.teretana.service.TipTreningaService;
+import com.ftn.teretana.service.TreningService;
+
+@Repository
+public class TerminTreningaDaoImpl implements TerminTreningaDao{
+
+	@Autowired
+	private JdbcTemplate jdbcTemplate;
+	
+	@Autowired
+	private SalaService salaService;
+	
+	@Autowired
+	private TreningService treningService;
+	
+	@Autowired
+	private KorisnikService korisnikService;
+	
+    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+	
+	private class TerminTreningaRowMapper implements RowMapper<TerminTreninga> {
+		
+		private List<Sala> salaLista = salaService.findAll();
+		
+		private List<Trening> listaTreninga = treningService.findAll();
+		
+		private List<Korisnik> listaKorisnika = korisnikService.findAll();
+		
+		@Override
+		public TerminTreninga mapRow(ResultSet rs, int rowNum) throws SQLException {
+			int index = 1;
+			int id = rs.getInt(index++);
+			int salaID = rs.getInt(index++);
+			Sala sala = new Sala();
+			for(Sala salaTermin : salaLista) {
+				if(salaID == salaTermin.getId()) {
+					sala = salaTermin;
+				}
+			}
+			int treningID = rs.getInt(index++);
+			Trening trening = new Trening();
+			for(Trening treningTermin : listaTreninga) {
+				if(treningID == treningTermin.getId()) {
+					trening = treningTermin;
+				}
+			}
+			int clanID = rs.getInt(index++);
+			Clan clan = new Clan();
+			for(Korisnik clanTreninga : listaKorisnika) {
+				if(clanID == clanTreninga.getId()) {
+					clan = (Clan) clanTreninga;
+				}
+			}
+			LocalDateTime datumOdrzavanja = rs.getTimestamp(index++).toLocalDateTime();
+			boolean aktivan = rs.getBoolean(index++);
+			boolean popunjen = rs.getBoolean(index++);
+
+			TerminTreninga terminTreninga = new TerminTreninga(id,sala,trening,clan,datumOdrzavanja,aktivan,popunjen);
+			return terminTreninga;
+		}
+
+	}
+	
+	private class SlobodniTerminiRowMapper implements RowMapper<SlobodniTermini> {
+		
+		@Override
+		public SlobodniTermini mapRow(ResultSet rs, int rowNum) throws SQLException {
+			int index = 1;
+			int terminID = rs.getInt(index++);
+			String oznakaSale = rs.getString(index++);
+			int kapacitet = rs.getInt(index++);
+			LocalDateTime datumOdrzavanja = rs.getTimestamp(index++).toLocalDateTime();
+			String nazivTreninga = rs.getString(index++);
+			int brojClanovaZaTermin = rs.getInt(index++);
+			
+			SlobodniTermini slobodniTermini = new SlobodniTermini(terminID, oznakaSale, kapacitet, datumOdrzavanja, nazivTreninga, brojClanovaZaTermin);
+			return slobodniTermini;
+		}
+	}
+	
+	private class IzvestajRowMapper implements RowMapper<Izvestaj> {
+		
+		@Override
+		public Izvestaj mapRow(ResultSet rs, int rowNum) throws SQLException {
+			int index = 1;
+			int id = rs.getInt(index++);
+			String nazivTreninga = rs.getString(index++);
+			String trener = rs.getString(index++);
+			int brojTermina = rs.getInt(index++);
+			double cena = rs.getDouble(index++);
+			
+			Izvestaj izvestaj = new Izvestaj(id, nazivTreninga, trener, brojTermina, cena);
+			return izvestaj;
+		}
+	}
+	
+	// ovaj query vraca salu, kapacitet, datumOdrzavanja, naziv treninga, broj clanova koji su zakazali taj termin i to samo one termine koji treba da se dese
+	// prilikom zakazivanja termina dodam sve sto ima taj termin samo drugi clan i ovaj query uveca za 1 popunjenost dok ne dodje do punog kapaciteta tad se vise ne prikazuje
+	@Override
+	public List<SlobodniTermini> getSlobodniTermini(int id) {
+		String sql = "select t.id, s.oznakaSale, s.kapacitet, t.datumOdrzavanja, tre.naziv, count(t.clanID) as brojClanovaZaTermin\r\n"
+				+ "from sala as s,\r\n"
+				+ "termintreninga as t,\r\n"
+				+ "trening as tre\r\n"
+				+ "where s.id = t.salaID and\r\n"
+				+ "tre.id = t.treningID and\r\n"
+				+ "t.datumOdrzavanja >= current_date() and\r\n"
+				+ "(t.clanID is null or t.clanID not in ("+id+"))\r\n"
+				+ "group by s.oznakaSale, s.kapacitet, t.datumOdrzavanja, tre.naziv\r\n"
+				+ "having count(t.datumOdrzavanja) < s.kapacitet";
+		return jdbcTemplate.query(sql, new SlobodniTerminiRowMapper());
+	}
+	
+	@Override
+	public List<TerminTreninga> findAll() {
+		String sql = "select * from termintreninga where aktivan=1";
+		return jdbcTemplate.query(sql, new TerminTreningaRowMapper());
+	}
+	
+	@Override
+	public int generateNewID() {
+		String sql = "select * from termintreninga";
+		List<TerminTreninga> sviTermini = jdbcTemplate.query(sql, new TerminTreningaRowMapper());
+		int max = 0;
+		for(TerminTreninga termin : sviTermini) {
+			if(termin.getId() > max) {
+				max = termin.getId();
+			}
+		}
+		return max + 1;
+	}
+
+	@Override
+	public void save(TerminTreninga terminTreninga) {
+		if(terminTreninga.getClan() == null) {
+			String sql = "insert into termintreninga (id,salaID,treningID,clanID,datumOdrzavanja,aktivan,popunjen) values (?,?,?,?,?,?,?)";
+			jdbcTemplate.update(sql,terminTreninga.getId(),terminTreninga.getSala().getId(),terminTreninga.getTrening().getId(),null,terminTreninga.getDatumOdrzavanja(),terminTreninga.isAktivan(),terminTreninga.isPopunjen());
+		} else {
+			String sql = "insert into termintreninga (id,salaID,treningID,clanID,datumOdrzavanja,aktivan,popunjen) values (?,?,?,?,?,?,?)";
+			jdbcTemplate.update(sql,terminTreninga.getId(),terminTreninga.getSala().getId(),terminTreninga.getTrening().getId(),terminTreninga.getClan().getId(),terminTreninga.getDatumOdrzavanja(),terminTreninga.isAktivan(),terminTreninga.isPopunjen());	
+		}
+	}
+
+	@Override
+	public void update(TerminTreninga terminTreninga) {
+		String sql = "update termintreninga set salaID=?,treningID=?,clanID=?,datumOdrzavanja=?,aktivan=?,popunjen=? where id = ?";
+		if(terminTreninga.getClan() == null ) {
+			jdbcTemplate.update(sql,terminTreninga.getSala().getId(),terminTreninga.getTrening().getId(),null,terminTreninga.getDatumOdrzavanja(),terminTreninga.isAktivan(),terminTreninga.isPopunjen(), terminTreninga.getId());
+		} else {
+			jdbcTemplate.update(sql,terminTreninga.getSala().getId(),terminTreninga.getTrening().getId(),terminTreninga.getClan().getId(),terminTreninga.getDatumOdrzavanja(),terminTreninga.isAktivan(),terminTreninga.isPopunjen(), terminTreninga.getId());			
+		}
+	}
+
+	@Override
+	public void delete(int id) {
+		String sql = "update termintreninga set aktivan = 0 where id = ?";
+		jdbcTemplate.update(sql,id);
+	}
+
+	@Override
+	public TerminTreninga findOneByID(int id) {
+		try {
+			String sql = "select * from termintreninga where id=?";
+			return jdbcTemplate.queryForObject(sql, new TerminTreningaRowMapper(),id);
+		} catch(EmptyResultDataAccessException ex) {
+			return null;
+		}
+	}
+
+	@Override
+	public List<Izvestaj> getTermineOdDo(String datumOd, String datumDo) {
+		String sql = "select tre.id, tre.naziv, tre.trener, count(ter.id) as brojTermina, sum(tre.cena) as cenaTreninga\r\n"
+				+ "from trening as tre,\r\n"
+				+ "termintreninga as ter\r\n"
+				+ "where tre.id = ter.treningID and\r\n"
+				+ "(ter.datumOdrzavanja between '" + datumOd + " 00:00:00' and '" + datumDo + " 00:00:00')\r\n"
+				+ "group by tre.naziv, tre.trener";
+		return jdbcTemplate.query(sql, new IzvestajRowMapper());
+	}
+
+	@Override
+	public List<TerminTreninga> findTerminiTreninga(int id) {
+		String sql = "select * from termintreninga where treningID =" + id;
+		return jdbcTemplate.query(sql, new TerminTreningaRowMapper());
+	}
+
+}

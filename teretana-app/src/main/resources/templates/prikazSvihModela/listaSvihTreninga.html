@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1">
+<base th:href="@{/}">
+<title>Insert title here</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="js/jezici.js"> </script>
+</head>
+<body>
+	<div>
+		<span th:text="${#locale}"></span>
+		<span th:text="#{lang.change}"></span>:
+		<select id="locales" name="locales">
+		    <option value=""></option>
+		    <option value="en" th:text="#{lang.en}" th:selected="${#strings.equals(#locale.language,'en')}"></option>
+		    <option value="sr" th:text="#{lang.sr}" th:selected="${#strings.equals(#locale.language,'sr')}"></option>
+		</select>
+	</div>	
+	<div>
+		<div th:each="tre : ${treninziLista}">
+			<p th:text="#{treninzi.slika}">Slika: <img th:src="@{${tre.slikaPath}}" /></p>
+			<p th:text="#{treninzi.naziv}">Naziv: <a th:text="${tre.naziv}"></a> </p>
+			<p th:text="#{treninzi.cena}">Cena: <p th:text="${tre.cena}"></p> </p>
+			<p th:text="#{treninzi.ocena}">Ocena: <p th:text="${tre.prosecnaOcena}"></p> </p>
+		</div>
+	</div>
+</body>
+</html>

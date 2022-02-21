@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1">
+<title>Prijava</title>
+<base th:href="@{/}">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="js/jezici.js"> </script>
+</head>
+<body>
+	<div>
+		<span th:text="${#locale}"></span>
+		<span th:text="#{lang.change}"></span>:
+		<select id="locales" name="locales">
+		    <option value=""></option>
+		    <option value="en" th:text="#{lang.en}" th:selected="${#strings.equals(#locale.language,'en')}"></option>
+		    <option value="sr" th:text="#{lang.sr}" th:selected="${#strings.equals(#locale.language,'sr')}"></option>
+		</select>
+	</div>	
+		<form method="post" action="PrijavaNaSistem/logIn">
+			<table>
+				<tr>
+					<th th:text="#{login.korisnickoIme}">Korisnicko ime:</th>
+					<td><input type="text" name="korisnickoIme" required/></td>
+				</tr>
+				<tr>
+					<th th:text="#{login.lozinka}">Lozinka:</th>
+					<td><input type="password" name="lozinka" required/></td>
+				</tr>
+				<tr>
+					<th></th>
+					<td><input type="submit" value="Prijavi se"/></td>
+				</tr>
+			</table>
+		</form>
+		<p th:text="${poruka}"></p>
+		<li><a th:href="@{/}">Home</a></li>
+</body>
+</html>
